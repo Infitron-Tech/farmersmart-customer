@@ -16,14 +16,15 @@ import OfflinePage from "@/components/OfflinePage";
 import { maintenanceStore } from "@/stores/maintenanceStore";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import dynamic from "next/dynamic";
+import { initializeUserLocation } from "@/helpers/locationInitializer";
+import { getCookie } from "@/lib/cookies";
+import { handleLogout } from "@/helpers/auth";
 const BottomNavigation = dynamic(
   () => import("@/components/Functional/BottomNavigation"),
   { ssr: false }
 );
 import CookieConsent from "@/components/Functional/CookieConsent";
 import { store } from "@/lib/redux/store";
-import { getCookie } from "@/lib/cookies";
-import { handleLogout } from "@/helpers/auth";
 const RemovedItemsModal = dynamic(
   () => import("@/components/Modals/RemovedItemsModal"),
   { ssr: false }
@@ -93,6 +94,13 @@ export default function DefaultLayout({
   );
 
   const activeSettings: Settings | null = settings ?? null;
+
+  // Initialize user location from default settings on app load
+  useEffect(() => {
+    if (!isLoading && typeof window !== "undefined") {
+      initializeUserLocation(activeSettings);
+    }
+  }, [isLoading, activeSettings]);
 
   useEffect(() => {
     if (!isLoading) {

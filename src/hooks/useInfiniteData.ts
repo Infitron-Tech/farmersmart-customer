@@ -3,6 +3,7 @@ import { isSSR } from "@/helpers/getters";
 import { getCookie } from "@/lib/cookies";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
+import { staticLat, staticLng } from "@/config/constants";
 
 interface UseInfiniteDataProps<T> {
   fetcher: (params: {
@@ -53,8 +54,23 @@ export const useInfiniteData = <T>({
   } = useSWR(
     dataKey ? `/infinite-data-${dataKey}` : "/infinite-data",
     async () => {
-      const { lat = "", lng = "" } =
-        (getCookie("userLocation") as UserLocation) || {};
+      let lat = "";
+      let lng = "";
+
+      if (passLocation) {
+        const userLocation = getCookie("userLocation") as UserLocation;
+        if (userLocation?.lat) {
+          lat = String(userLocation.lat);
+        } else {
+          lat = String(staticLat);
+        }
+        if (userLocation?.lng) {
+          lng = String(userLocation.lng);
+        } else {
+          lng = String(staticLng);
+        }
+      }
+
       const location = passLocation ? { latitude: lat, longitude: lng } : {};
       const res = await fetcher({
         page: 1,
@@ -103,7 +119,23 @@ export const useInfiniteData = <T>({
     isLoadingRef.current = true;
     currentPageRef.current = nextPage;
 
-    const { lat = "", lng = "" } = getCookie("userLocation") as UserLocation;
+    let lat = "";
+    let lng = "";
+
+    if (passLocation) {
+      const userLocation = getCookie("userLocation") as UserLocation;
+      if (userLocation?.lat) {
+        lat = String(userLocation.lat);
+      } else {
+        lat = String(staticLat);
+      }
+      if (userLocation?.lng) {
+        lng = String(userLocation.lng);
+      } else {
+        lng = String(staticLng);
+      }
+    }
+
     const location = passLocation ? { latitude: lat, longitude: lng } : {};
 
     try {
@@ -118,7 +150,7 @@ export const useInfiniteData = <T>({
         const newItems = res.data?.data || [];
         const newTotal = res.data?.total || 0;
 
-        setData((prev) => [...prev, ...newItems]);
+        setData((prev: T[]) => [...prev, ...newItems]);
         setPage(nextPage);
         setTotal(newTotal);
         setHasMore(data.length + newItems.length < newTotal);

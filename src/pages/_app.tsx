@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import ReduxProvider from "@/lib/redux/ReduxProvider";
-import DefaultLayout from "@/layouts/default";
+import MarketplaceLayout from "@/layouts/marketplace";
 import { NextPageWithLayout } from "@/types";
 import { fontSans, fontMono } from "@/config/fonts";
 import { trackPageView } from "@/lib/analytics";
@@ -61,13 +61,13 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     };
   }, [router.events, router.pathname]);
 
-  // ✅ Use custom layout if defined, else wrap in DefaultLayout
+  // ✅ Use custom layout if defined, else wrap in MarketplaceLayout
   const getLayout =
     Component.getLayout ??
     ((page) => (
-      <DefaultLayout initialSettings={pageProps?.initialSettings}>
+      <MarketplaceLayout initialSettings={pageProps?.initialSettings}>
         {page}
-      </DefaultLayout>
+      </MarketplaceLayout>
     ));
 
   return (

@@ -20,6 +20,19 @@ const GoogleMap: FC<GoogleMapProps> = ({
 
     async function initMap() {
       try {
+        // Wait for Google Maps API to be available
+        let attempts = 0;
+        while (!window.google?.maps && attempts < 50) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          attempts++;
+        }
+
+        if (!window.google?.maps) {
+          throw new Error(
+            "Google Maps API failed to load. Please check your API key and internet connection."
+          );
+        }
+
         // Load Maps and Marker libraries
         const { Map } = (await window.google.maps.importLibrary(
           "maps"

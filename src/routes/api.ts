@@ -837,7 +837,13 @@ export const getSections = async (
   } = {},
 ): Promise<PaginatedResponse<FeaturedSection[]>> => {
   try {
-    const response = await api.get("/featured-sections", { params });
+    const { access_token, ...queryParams } = params;
+    const response = await api.get("/featured-sections", {
+      params: queryParams,
+      headers: access_token
+        ? { Authorization: `Bearer ${access_token}` }
+        : undefined,
+    });
     return response.data;
   } catch (error) {
     console.error("API error:", error);
@@ -861,9 +867,12 @@ export const getSectionBySlug = async (
   } = {},
 ): Promise<PaginatedResponse<Product[]>> => {
   try {
-    const { slug = "" } = params;
+    const { slug = "", access_token, ...queryParams } = params;
     const response = await api.get(`/featured-sections/${slug}/products`, {
-      params,
+      params: queryParams,
+      headers: access_token
+        ? { Authorization: `Bearer ${access_token}` }
+        : undefined,
     });
     return response.data;
   } catch (error) {

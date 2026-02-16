@@ -1,158 +1,84 @@
-import { getCookieFromContext, isSSR } from "@/helpers/getters";
-import HomeCategories from "@/views/homePage/HomeCategories";
-import HomeTopSlider from "@/views/homePage/HomeTopSlider";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { getHomePageData } from "@/services/homePageService";
-import HomeProducts from "@/views/homePage/HomeProducts";
-import DeliveryBanner from "@/views/homePage/DeliveryBanner";
-import {
-  BannerData,
-  Brand,
-  Category,
-  FeaturedSection,
-  Product,
-  Settings,
-  Store,
-} from "@/types/ApiResponse";
-import HomeBrands from "@/views/homePage/HomeBrands";
-import HomeStores from "@/views/homePage/HomeStores";
-import { NextPageWithLayout } from "@/types";
-import { getUserLocationFromContext } from "@/helpers/functionalHelpers";
-import HomeFeaturedSections from "@/views/homePage/HomeFeaturedSections";
-import { getAccessTokenFromContext } from "@/helpers/auth";
-import HomeCarouselSlider from "@/views/homePage/HomeCarouselSlider";
+import { getSettings } from "@/routes/api";
+import { isSSR } from "@/helpers/getters";
+import { Settings } from "@/types/ApiResponse";
+import { store } from "@/lib/redux/store";
 import { loadTranslations } from "../../i18n";
-import { useTranslation } from "react-i18next";
-import DynamicSEO from "@/SEO/DynamicSEO";
-import {
-  generateOrganizationSchema,
-  generateWebsiteSchema,
-} from "@/helpers/seo";
-import { useSettings } from "@/contexts/SettingsContext";
-import { siteConfig } from "@/config/site";
-import AppDownloadSection from "@/views/homePage/AppDownloadSection";
-import HomeServiceHighlights from "@/views/homePage/HomeServiceHighlights";
-import dynamic from "next/dynamic";
 
-const HomeRecentlyViewed = dynamic(
-  () => import("@/views/homePage/HomeRecentlyViewed"),
-  { ssr: false }
+import LandingPage from "./landing";
+import LandingLayout from "@/layouts/landing";
+
+type LandingIndexProps = {
+  initialSettings?: Settings | null;
+  isLoggedIn?: boolean;
+};
+
+/**
+ * Landing Page - Default home page
+ * Shows landing page to logged-out users
+ * Redirects logged-in users to /marketplace
+ */
+const LandingIndex = ({ isLoggedIn }: LandingIndexProps) => {
+  const router = useRouter();
+
+  // Client-side redirect for logged-in users
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace("/marketplace");
+    }
+  }, [isLoggedIn, router]);
+
+  // While redirecting, show loading state
+  if (isLoggedIn) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-4xl mb-4">🚀</div>
+          <p className="text-gray-600">Redirecting to marketplace...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show landing page for logged-out users
+  return <LandingPage />;
+};
+
+// Use LandingLayout
+LandingIndex.getLayout = (page: React.ReactNode) => (
+  <LandingLayout>{page}</LandingLayout>
 );
 
-type HomePageProps = {
-  initialSettings?: Settings | null;
-  initialCategories?: Category[];
-  initialBanners?: BannerData;
-  initialProducts?: Product[];
-  initialBrands?: Brand[];
-  initialStores?: Store[];
-  initialSections?: FeaturedSection[];
-  error?: string;
-};
-
-const HomePage: NextPageWithLayout<HomePageProps> = ({
-  initialCategories,
-  initialBanners,
-  initialProducts,
-  initialBrands,
-  initialStores,
-  initialSections,
-}) => {
-  const { t } = useTranslation();
-  const { webSettings } = useSettings();
-
-  // Generate SEO schemas
-  const siteName = webSettings?.siteName || siteConfig.name;
-  const siteDescription =
-    webSettings?.metaDescription || siteConfig.metaDescription;
-  const siteLogo = webSettings?.siteHeaderLogo || "/logo.png";
-
-  const organizationSchema = generateOrganizationSchema(
-    siteName,
-    siteDescription,
-    siteLogo
-  );
-
-  const websiteSchema = generateWebsiteSchema(siteName);
-
-  return (
-    <>
-      <DynamicSEO
-        title={t("pageTitle.home")}
-        description={siteDescription}
-        keywords={siteConfig.metaKeywords}
-        canonical="/"
-        ogType="website"
-        ogTitle={siteName}
-        ogDescription={siteDescription}
-        ogImage={siteLogo}
-        jsonLd={[organizationSchema, websiteSchema]}
-      />
-
-      <div className="flex flex-col gap-0">
-        <HomeTopSlider initialBanners={initialBanners} />
-
-        <HomeBrands initialBrands={initialBrands} />
-
-        <HomeCategories initialCategories={initialCategories} />
-
-        <HomeStores initialStores={initialStores} />
-
-        <HomeProducts initialProducts={initialProducts} />
-
-        <HomeCarouselSlider initialBanners={initialBanners} />
-
-        <HomeFeaturedSections initialSections={initialSections} />
-
-        {/* <HomeRecentlyViewed /> */}
-
-        <HomeServiceHighlights />
-
-        <DeliveryBanner />
-
-        <AppDownloadSection />
-      </div>
-    </>
-  );
-};
-
-export const getServerSideProps: GetServerSideProps<HomePageProps> | undefined =
+export const getServerSideProps: GetServerSideProps<LandingIndexProps> | undefined =
   isSSR()
     ? async (context) => {
         try {
           await loadTranslations(context);
 
-          const access_token = (await getAccessTokenFromContext(context)) || "";
+          // Fetch settings
+          const res = await getSettings();
+          const settings = res.success ? res.data : null;
 
-          const { lat = "", lng = "" } =
-            (await getUserLocationFromContext(context)) || {};
+          // Check if user is logged in (check auth state from redux or cookies)
+          const authState = store.getState().auth;
+          const isLoggedIn = authState?.isLoggedIn || false;
 
-          // 1️⃣ take category from query if available, else fallback to cookie
-          const queryCategory = context.query.category as string | undefined;
-          const cookieCategory =
-            (getCookieFromContext(context, "homeCategory") as string) || "";
-
-          const homeCategory = queryCategory || cookieCategory;
-
-          const {
-            settings,
-            categories,
-            banners,
-            products,
-            brands,
-            stores,
-            sections,
-          } = await getHomePageData({ lat, lng, access_token, homeCategory });
+          // Server-side redirect for logged-in users
+          if (isLoggedIn) {
+            return {
+              redirect: {
+                destination: "/marketplace",
+                permanent: false,
+              },
+            };
+          }
 
           return {
             props: {
               initialSettings: settings,
-              initialCategories: categories,
-              initialBanners: banners,
-              initialProducts: products,
-              initialBrands: brands,
-              initialStores: stores,
-              initialSections: sections,
+              isLoggedIn: false,
             },
           };
         } catch (err) {
@@ -160,20 +86,11 @@ export const getServerSideProps: GetServerSideProps<HomePageProps> | undefined =
           return {
             props: {
               initialSettings: null,
-              initialCategories: [],
-              initialBanners: undefined,
-              initialProducts: [],
-              initialBrands: [],
-              initialStores: [],
-              initialSections: [],
-              error:
-                err instanceof Error
-                  ? err.message
-                  : "An error occurred during SSR",
+              isLoggedIn: false,
             },
           };
         }
       }
     : undefined;
 
-export default HomePage;
+export default LandingIndex;

@@ -2,6 +2,13 @@ import Script from "next/script";
 import type { Settings } from "@/types/ApiResponse";
 import { getWebSettings } from "@/helpers/getters";
 
+declare global {
+  interface Window {
+    google?: any;
+    googleMapsLoading?: boolean;
+  }
+}
+
 type Props = {
   settings: Settings | null;
 };
@@ -11,7 +18,12 @@ export default function GoogleMapsHeadScript({ settings }: Props) {
 
   const googleMapKey = webSettings?.googleMapKey;
 
-  if (!googleMapKey) return null;
+  if (!googleMapKey) {
+    if (typeof window !== "undefined") {
+      console.warn("Google Maps API key not found in settings");
+    }
+    return null;
+  }
   // Check if already loaded
   if (typeof window !== "undefined" && window.google && window.google.maps) {
     return null;

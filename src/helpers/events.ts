@@ -2,7 +2,6 @@ import { store } from "@/lib/redux/store";
 import { updateCartData } from "./updators";
 import { getCookie } from "@/lib/cookies";
 import { UserLocation } from "@/components/Location/types/LocationAutoComplete.types";
-import { addToast } from "@heroui/react";
 import { clearRecentlyViewed } from "@/lib/redux/slices/recentlyViewedSlice";
 
 export const onLocationChange = () => {
@@ -67,10 +66,11 @@ export const onAppLoad = () => {
     }
   }
 
+  // Check if location is set, but don't force modal - let default location be used
   const userLocation = getCookie("userLocation") as UserLocation;
   if (!userLocation) {
-    document.getElementById("location-modal-btn")?.click();
-    addToast({ color: "default", title: "Please Select Location First !" });
+    // Location will be initialized from default settings in layout
+    // No need to force the modal on every app load
   }
 };
 
