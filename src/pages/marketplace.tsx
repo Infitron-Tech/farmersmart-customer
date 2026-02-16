@@ -31,13 +31,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { siteConfig } from "@/config/site";
 import AppDownloadSection from "@/views/homePage/AppDownloadSection";
 import HomeServiceHighlights from "@/views/homePage/HomeServiceHighlights";
-import dynamic from "next/dynamic";
 import MarketplaceLayout from "@/layouts/marketplace";
-
-const HomeRecentlyViewed = dynamic(
-  () => import("@/views/homePage/HomeRecentlyViewed"),
-  { ssr: false }
-);
 
 type MarketplacePageProps = {
   initialSettings?: Settings | null;
@@ -56,7 +50,6 @@ const MarketplacePage: NextPageWithLayout<MarketplacePageProps> = ({
   initialProducts,
   initialBrands,
   initialStores,
-  initialSections,
 }) => {
   const { t } = useTranslation();
   const { webSettings } = useSettings();
@@ -146,7 +139,6 @@ export const getServerSideProps: GetServerSideProps<MarketplacePageProps> | unde
             products,
             brands,
             stores,
-            sections,
           } = await getHomePageData({ lat, lng, access_token, homeCategory });
 
           return {
@@ -157,7 +149,6 @@ export const getServerSideProps: GetServerSideProps<MarketplacePageProps> | unde
               initialProducts: products,
               initialBrands: brands,
               initialStores: stores,
-              initialSections: sections,
             },
           };
         } catch (err) {
@@ -170,7 +161,6 @@ export const getServerSideProps: GetServerSideProps<MarketplacePageProps> | unde
               initialProducts: [],
               initialBrands: [],
               initialStores: [],
-              initialSections: [],
               error:
                 err instanceof Error
                   ? err.message

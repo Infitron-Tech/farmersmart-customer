@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import LandingHeader from "@/components/Landing/Header";
 import FooterCTA from "@/components/Landing/FooterCTA";
@@ -59,20 +59,20 @@ export default function LandingLayout({
 
   // Force light theme for Landing page to show green branding
   const { theme, setTheme } = useTheme();
-  const [previousTheme, setPreviousTheme] = useState<string | undefined>(undefined);
+  const previousThemeRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     // Save current theme and switch to light
-    setPreviousTheme(theme);
+    previousThemeRef.current = theme;
     setTheme("light");
 
     // Restore previous theme when unmounting
     return () => {
-      if (previousTheme) {
-        setTheme(previousTheme);
+      if (previousThemeRef.current) {
+        setTheme(previousThemeRef.current);
       }
     };
-  }, []);
+  }, [theme, setTheme]);
 
   // Monitor online/offline status
   useEffect(() => {
