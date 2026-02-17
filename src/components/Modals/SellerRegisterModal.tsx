@@ -12,7 +12,6 @@ import {
 import { useState, ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { sellerRegister } from "@/routes/api";
-import { useTranslation } from "react-i18next";
 
 interface SellerRegisterModalProps {
   trigger?: ReactNode;
@@ -30,7 +29,6 @@ export default function SellerRegisterModal({
   trigger,
 }: SellerRegisterModalProps) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -109,7 +107,12 @@ export default function SellerRegisterModal({
         mobile: formData.mobile,
         password: formData.password,
         password_confirmation: formData.password_confirmation,
+        // Required backend fields
+        verification_status: "approved",
+        visibility_status: "visible",
       } as any);
+
+      console.log("Registration response:", response);
 
       if (response.success) {
         addToast({
@@ -135,11 +138,44 @@ export default function SellerRegisterModal({
           onClose();
         }, 1500);
       } else {
+        // Handle backend validation errors
+        console.error("Registration error response:", response);
+        console.error("Full errors object:", response.errors);
+
+        // Check if response contains field errors
+        if (response.errors && typeof response.errors === "object") {
+          const backendErrors: { [key: string]: string } = {};
+
+          // Map backend field names to form field names
+          for (const [key, value] of Object.entries(response.errors)) {
+            if (Array.isArray(value)) {
+              backendErrors[key] = value[0]; // Get first error message
+            } else if (typeof value === "string") {
+              backendErrors[key] = value;
+            }
+          }
+
+          console.error("Mapped backend errors:", backendErrors);
+          setErrors(backendErrors);
+        }
+
+        // Show more detailed error message
+        const errorDetails = response.errors
+          ? Object.entries(response.errors)
+              .map(([key, value]) => {
+                if (Array.isArray(value)) {
+                  return value.join(", ");
+                }
+                return value;
+              })
+              .join("\n")
+          : "";
+
         addToast({
           title: "Registration Failed",
-          description: response.message || "An error occurred during registration",
+          description: errorDetails || response.message || "Please check the form for errors and try again",
           color: "danger",
-          timeout: 5000,
+          timeout: 7000,
         });
       }
     } catch (error) {
@@ -193,6 +229,23 @@ export default function SellerRegisterModal({
 
               <ModalBody className="gap-4">
                 <div className="space-y-4">
+                  {/* Error Banner */}
+                  {Object.keys(errors).length > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <p className="text-sm font-semibold text-red-700 mb-2">
+                        Please fix the following errors:
+                      </p>
+                      <ul className="text-sm text-red-600 space-y-1">
+                        {Object.entries(errors).map(([key, error]) => (
+                          <li key={key} className="flex items-start gap-2">
+                            <span>•</span>
+                            <span>{error}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                   {/* Name */}
                   <Input
                     name="name"
