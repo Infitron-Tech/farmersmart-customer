@@ -13,7 +13,7 @@ const FooterCTA: FC = () => {
       { label: "Press", href: "#" },
     ],
     for_farmers: [
-      { label: "Become a Seller", href: "/seller-register" },
+      { label: "Become a Farmer", href: "/seller-register" },
       { label: "Farmer Dashboard", href: "#" },
       { label: "Support", href: "#" },
       { label: "Commission Details", href: "#" },

@@ -106,7 +106,7 @@ const Footer: FC = () => {
                   { label: t("footer.quick_links.faqs"), href: "/faqs" },
                   { label: t("footer.quick_links.stores"), href: "/stores" },
                   {
-                    label: "Become a Seller",
+                    label: "Become a Farmer",
                     href: "/seller-register",
                   },
                 ].map(({ label, href }) => (
@@ -316,7 +316,7 @@ const Footer: FC = () => {
                     href: "/delivery-zones",
                   },
                   {
-                    label: "Become a Seller",
+                    label: "Become a Farmer",
                     href: "/seller-register",
                   },
                 ].map(({ label, href }) => (

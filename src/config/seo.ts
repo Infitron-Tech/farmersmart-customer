@@ -120,11 +120,11 @@ export const pageSEOConfigs: Record<string, PageSEOConfig> = {
   },
 
   sellerRegister: {
-    title: "Become a Seller",
+    title: "Become a Farmer",
     description:
-      "Join our platform as a seller and reach thousands of customers.",
+      "Join our platform as a farmer and reach thousands of customers.",
     keywords:
-      "become a seller, register, seller registration, sell online, vendor",
+      "become a farmer, register, farmer registration, sell online, vendor",
     ogType: "website",
     canonical: "/seller-register",
   },
