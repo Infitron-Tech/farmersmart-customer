@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import LandingHeader from "@/components/Landing/Header";
 import FooterCTA from "@/components/Landing/FooterCTA";
+import FooterCTABanner from "@/components/Landing/FooterCTABanner";
 import FirebaseInitializer from "@/components/Functional/FirebaseInitializer";
 import { getSpecificSettings, isSSR } from "@/helpers/getters";
 import { getSettings } from "@/routes/api";
@@ -218,7 +219,10 @@ export default function LandingLayout({
                   {children}
                 </main>
 
-                {/* Landing Footer instead of Footer */}
+                {/* Landing CTA Banner */}
+                <FooterCTABanner />
+
+                {/* Landing Footer */}
                 <FooterCTA />
 
                 {/* Utilities */}
