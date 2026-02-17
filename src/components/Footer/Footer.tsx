@@ -10,10 +10,19 @@ import { Chip, Image } from "@heroui/react";
 import { useSettings } from "@/contexts/SettingsContext";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
+import dynamic from "next/dynamic";
+
+const SellerRegisterModal = dynamic(
+  () => import("@/components/Modals/SellerRegisterModal"),
+  { ssr: false }
+);
 
 const Footer: FC = () => {
   const { webSettings } = useSettings();
   const { t } = useTranslation();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   const version = process.env.NEXT_PUBLIC_APP_VERSION || "0";
 
@@ -51,7 +60,7 @@ const Footer: FC = () => {
 
   return (
     <footer className="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white w-full">
-      <div className="w-full max-w-[1536px] mx-auto px-2 sm:px-6 pt-6 sm:pt-12 pb-3 sm:pb-5">
+      <div className="w-full max-w-384 mx-auto px-2 sm:px-6 pt-6 sm:pt-12 pb-3 sm:pb-5">
         {/* Mobile Compact Layout */}
         <div className="block sm:hidden space-y-6">
           {/* Mobile Company Info - Compact */}
@@ -105,10 +114,6 @@ const Footer: FC = () => {
                   },
                   { label: t("footer.quick_links.faqs"), href: "/faqs" },
                   { label: t("footer.quick_links.stores"), href: "/stores" },
-                  {
-                    label: "Become a Farmer",
-                    href: "/seller-register",
-                  },
                 ].map(({ label, href }) => (
                   <Link
                     key={label}
@@ -118,6 +123,15 @@ const Footer: FC = () => {
                     {label}
                   </Link>
                 ))}
+                {!isLoggedIn && (
+                  <SellerRegisterModal
+                    trigger={
+                      <button className="block w-full text-slate-300 hover:text-primary-400 transition-colors text-center text-xs py-1 cursor-pointer">
+                        Become a Farmer
+                      </button>
+                    }
+                  />
+                )}
               </div>
             </div>
 
@@ -315,10 +329,6 @@ const Footer: FC = () => {
                     label: t("footer.quick_links.delivery_zones"),
                     href: "/delivery-zones",
                   },
-                  {
-                    label: "Become a Farmer",
-                    href: "/seller-register",
-                  },
                 ].map(({ label, href }) => (
                   <Link
                     title={label}
@@ -329,6 +339,15 @@ const Footer: FC = () => {
                     {label}
                   </Link>
                 ))}
+                {!isLoggedIn && (
+                  <SellerRegisterModal
+                    trigger={
+                      <button className="block text-slate-300 hover:text-primary-400 transition-all transform hover:translate-x-1 cursor-pointer">
+                        Become a Farmer
+                      </button>
+                    }
+                  />
+                )}
               </div>
             </div>
 

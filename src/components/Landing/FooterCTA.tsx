@@ -2,9 +2,19 @@ import { FC } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
+import dynamic from "next/dynamic";
+
+const SellerRegisterModal = dynamic(
+  () => import("@/components/Modals/SellerRegisterModal"),
+  { ssr: false }
+);
 
 const FooterCTA: FC = () => {
   const { webSettings } = useSettings();
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+
   const footerLinks = {
     company: [
       { label: "About Us", href: "/about-us" },
@@ -13,7 +23,6 @@ const FooterCTA: FC = () => {
       { label: "Press", href: "#" },
     ],
     for_farmers: [
-      { label: "Become a Farmer", href: "/seller-register" },
       { label: "Farmer Dashboard", href: "#" },
       { label: "Support", href: "#" },
       { label: "Commission Details", href: "#" },
@@ -105,6 +114,17 @@ const FooterCTA: FC = () => {
             <motion.div variants={itemVariants} className="space-y-4">
               <h4 className="text-white font-semibold">For Farmers</h4>
               <ul className="space-y-2">
+                {!isLoggedIn && (
+                  <li>
+                    <SellerRegisterModal
+                      trigger={
+                        <button className="hover:text-green-400 transition-colors duration-300 text-sm cursor-pointer">
+                          Become a Farmer
+                        </button>
+                      }
+                    />
+                  </li>
+                )}
                 {footerLinks.for_farmers.map((link, i) => (
                   <li key={i}>
                     <Link
