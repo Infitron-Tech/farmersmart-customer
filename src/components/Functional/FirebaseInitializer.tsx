@@ -117,6 +117,11 @@ export default function FirebaseInitializer({
 
       const { vapIdKey = "" } = notificationSettings || {};
 
+      if (!firebaseConfig) {
+        console.warn("Firebase configuration not found in settings. Firebase features will be disabled.");
+        return;
+      }
+
       if (firebaseConfig && !firebase) {
         const firebaseInstance = initializeFirebase(firebaseConfig);
 
