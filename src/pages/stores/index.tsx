@@ -91,10 +91,10 @@ const StoresPage: NextPageWithLayout<StoresPageProps> = ({ initialStores }) => {
       />
 
       <PageHeader
-        title={t("pages.stores.title", "All Stores")}
+        title={t("pages.stores.title", "All Farms")}
         subtitle={t(
           "pages.stores.subtitle",
-          "Explore our complete collection of"
+          "Explore our complete collection of Farms"
         )}
         highlightText={
           total ? t("pages.stores.highlight", { count: total }) : ""
@@ -104,7 +104,7 @@ const StoresPage: NextPageWithLayout<StoresPageProps> = ({ initialStores }) => {
       <div className="mb-4 sm:mb-6 w-full flex justify-start">
         <Input
           type="text"
-          placeholder={t("pages.stores.search_placeholder", "Search stores...")}
+          placeholder={t("pages.stores.search_placeholder", "Search farms...")}
           value={searchQuery}
           size="sm"
           onValueChange={setSearchQuery}

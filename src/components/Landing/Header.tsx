@@ -22,7 +22,7 @@ const Header: FC = () => {
   const navLinks = [
     { label: "Features", href: "#features" },
     { label: "How It Works", href: "#how-it-works" },
-    { label: "Marketplace", href: "/marketplace" },
+    { label: "Marketplace", href: "/products" },
     { label: "About", href: "/about-us" },
   ];
 

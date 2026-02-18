@@ -23,6 +23,7 @@ import {
   HelpCircle,
   Info,
   X,
+  MapPin,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
@@ -102,6 +103,7 @@ export const Navbar: FC = () => {
   const navMenuItems = [
     { label: t("nav.home"), href: "/", icon: Home },
     { label: t("nav.products"), href: "/products", icon: Package },
+    { label: "Farms", href: "/stores", icon: MapPin },
     { label: t("nav.brands"), href: "/brands", icon: Tags },
     { label: t("nav.faqs"), href: "/faqs", icon: HelpCircle },
     { label: t("nav.about_us"), href: "/about-us", icon: Info },
@@ -194,7 +196,7 @@ export const Navbar: FC = () => {
 
           {/* Search Bar - Desktop */}
           <NavbarContent
-            className="hidden md:flex md:basis-1/2"
+            className="hidden md:flex md:basis-1/3"
             justify="center"
           >
             <div className="w-full max-w-xl">
@@ -202,8 +204,32 @@ export const Navbar: FC = () => {
             </div>
           </NavbarContent>
 
+          {/* Desktop Menu Items */}
+          <NavbarContent className="hidden md:flex md:basis-1/4" justify="center">
+            <NavbarItem>
+              <Link
+                color="foreground"
+                href="/products"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                <Package size={18} />
+                <span>{t("nav.products")}</span>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link
+                color="foreground"
+                href="/stores"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                <MapPin size={18} />
+                <span>Farms</span>
+              </Link>
+            </NavbarItem>
+          </NavbarContent>
+
           {/* Right Side Actions - Desktop */}
-          <NavbarContent className="hidden md:flex" justify="end">
+          <NavbarContent className="hidden md:flex md:basis-1/4" justify="end">
             <NavbarItem className="flex items-end gap-2">
               <LanguageSwitcher />
             </NavbarItem>

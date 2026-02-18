@@ -241,7 +241,7 @@
     "rushDeliveryDescription": "त्वरित सेवा",
     "selectAddressToCheckRushDelivery": "रश डिलीवरी उपलब्ध है या नहीं देखने के लिए एक पता चुनें",
     "selectAddressToEnableRush": "रश डिलीवरी सक्षम करने के लिए एक पता चुनें",
-    "stores": "स्टोर",
+    "stores": "फार्म",
     "success": "ऑर्डर सफलतापूर्वक किया गया!",
     "totalAmount": "कुल राशि",
     "useWalletBalance": "वॉलेट बैलेंस का उपयोग करें",
@@ -405,7 +405,7 @@
       "faqs": "सामान्य प्रश्न",
       "header": "त्वरित लिंक",
       "order_now": "अभी ऑर्डर करें",
-      "stores": "स्टोर"
+      "stores": "फार्म"
     },
     "social": {
       "follow_us": "हमें फ़ॉलो करें"
@@ -645,8 +645,8 @@
     "search": "खोज परिणाम",
     "shopping-list": "शॉपिंग सूची",
     "shipping-policy": "शिपिंग नीति",
-    "store-products": "स्टोर उत्पाद",
-    "stores": "स्टोर",
+    "store-products": "फार्म उत्पाद",
+    "stores": "फार्म",
     "terms-and-conditions": "नियम और शर्तें",
     "transactions": "लेन-देन",
     "wallet": "वॉलेट",
@@ -929,8 +929,8 @@
     },
     "storeProductsPage": {
       "breadcrumbs": {
-        "store": "स्टोर",
-        "stores": "स्टोर"
+        "store": "फार्म",
+        "stores": "फार्म"
       },
       "highlight": "{{count}} उत्पाद",
       "loadMoreButton": "और लोड करें",
@@ -944,14 +944,14 @@
       "title": "स्टोर उत्पाद"
     },
     "stores": {
-      "highlight": "{{count}} स्टोर",
+      "highlight": "{{count}} फार्म",
       "noStores": {
-        "description": "वर्तमान में दिखाने के लिए कोई स्टोर नहीं हैं।",
-        "title": "कोई स्टोर उपलब्ध नहीं"
+        "description": "वर्तमान में दिखाने के लिए कोई फार्म नहीं हैं।",
+        "title": "कोई फार्म उपलब्ध नहीं"
       },
-      "search_placeholder": "स्टोर खोजें...",
-      "subtitle": "हमारे सभी स्टोर संग्रह का अन्वेषण करें",
-      "title": "सभी स्टोर"
+      "search_placeholder": "फार्म खोजें...",
+      "subtitle": "हमारे सभी फार्म संग्रह का अन्वेषण करें",
+      "title": "सभी फार्म"
     },
     "termsAndConditions": {
       "breadcrumb": "सेवा की शर्तें",

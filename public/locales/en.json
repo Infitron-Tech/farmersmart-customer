@@ -1,3 +1,4 @@
+
 {
   "about_us": "About Us",
   "addToBucket": "Add to Bucket",
@@ -404,7 +405,7 @@
       "faqs": "FAQs",
       "header": "Quick Links",
       "order_now": "Order Now",
-      "stores": "Stores"
+      "stores": "Farms"
     },
     "social": {
       "follow_us": "Follow Us"
@@ -645,7 +646,7 @@
     "shopping-list": "Shopping List",
     "shipping-policy": "Shipping Policy",
     "store-products": "Store Products",
-    "stores": "Stores",
+    "stores": "Farms",
     "terms-and-conditions": "Terms & Conditions",
     "transactions": "Transactions",
     "wallet": "Wallet",
@@ -928,8 +929,8 @@
     },
     "storeProductsPage": {
       "breadcrumbs": {
-        "store": "Store",
-        "stores": "Stores"
+        "store": "Farm",
+        "stores": "Farms"
       },
       "highlight": "{{count}} Products",
       "loadMoreButton": "Load More",
@@ -943,14 +944,14 @@
       "title": "Store Products"
     },
     "stores": {
-      "highlight": "{{count}} Stores",
+      "highlight": "{{count}} Farms",
       "noStores": {
-        "description": "Currently, there are no stores to display.",
-        "title": "No Stores Available"
+        "description": "Currently, there are no farms to display.",
+        "title": "No Farms Available"
       },
-      "search_placeholder": "Search stores...",
-      "subtitle": "Explore our complete collection of",
-      "title": "All Stores"
+      "search_placeholder": "Search farms...",
+      "subtitle": "Explore our complete collection of Farms",
+      "title": "All Farms"
     },
     "termsAndConditions": {
       "breadcrumb": "Terms of Service",

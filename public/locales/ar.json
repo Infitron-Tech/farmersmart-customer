@@ -240,7 +240,7 @@
     "rushDeliveryDescription": "خدمة سريعة",
     "selectAddressToCheckRushDelivery": "اختر عنوانًا لمعرفة ما إذا كانت خدمة التوصيل السريع متاحة",
     "selectAddressToEnableRush": "اختر عنوانًا لتفعيل التوصيل السريع",
-    "stores": "المتاجر",
+    "stores": "المزارع",
     "success": "تم تقديم الطلب بنجاح!",
     "totalAmount": "المبلغ الإجمالي",
     "useWalletBalance": "استخدم رصيد المحفظة",
@@ -404,7 +404,7 @@
       "faqs": "الأسئلة الشائعة",
       "header": "روابط سريعة",
       "order_now": "اطلب الآن",
-      "stores": "المتاجر"
+      "stores": "المزارع"
     },
     "social": {
       "follow_us": "تابعنا"
@@ -644,8 +644,8 @@
     "search": "نتائج البحث",
     "shopping-list": "قائمة التسوق",
     "shipping-policy": "سياسة الشحن",
-    "store-products": "منتجات المتجر",
-    "stores": "المتاجر",
+    "store-products": "منتجات المزرعة",
+    "stores": "المزارع",
     "terms-and-conditions": "الشروط والأحكام",
     "transactions": "المعاملات",
     "wallet": "المحفظة",
@@ -928,8 +928,8 @@
     },
     "storeProductsPage": {
       "breadcrumbs": {
-        "store": "المتجر",
-        "stores": "المتاجر"
+        "store": "مزرعة",
+        "stores": "المزارع"
       },
       "highlight": "{{count}} منتج",
       "loadMoreButton": "تحميل المزيد",
@@ -943,14 +943,14 @@
       "title": "منتجات المتجر"
     },
     "stores": {
-      "highlight": "{{count}} متجر",
+      "highlight": "{{count}} مزرعة",
       "noStores": {
-        "description": "لا توجد متاجر للعرض حاليًا.",
-        "title": "لا توجد متاجر متاحة"
+        "description": "لا توجد مزارع للعرض حاليًا.",
+        "title": "لا توجد مزارع متاحة"
       },
-      "search_placeholder": "ابحث عن متاجر...",
-      "subtitle": "استكشف مجموعتنا الكاملة من",
-      "title": "جميع المتاجر"
+      "search_placeholder": "ابحث عن مزارع...",
+      "subtitle": "استكشف مجموعتنا الكاملة من المزارع",
+      "title": "جميع المزارع"
     },
     "termsAndConditions": {
       "breadcrumb": "شروط الخدمة",

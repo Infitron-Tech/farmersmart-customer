@@ -80,7 +80,7 @@ const HeroSection: FC = () => {
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link href="/marketplace">
+              <Link href="/products">
                 <button className="bg-linear-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-lg font-semibold hover:shadow-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 flex items-center justify-center gap-2">
                   <svg
                     className="w-5 h-5"

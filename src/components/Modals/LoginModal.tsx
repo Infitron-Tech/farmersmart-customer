@@ -25,6 +25,8 @@ import {
   Mail,
   Smartphone,
   Phone,
+  Sprout,
+  Lock,
 } from "lucide-react";
 import { MyButton } from "../custom/MyButton";
 import RegisterModal from "./RegisterModal";
@@ -63,6 +65,7 @@ import { demoEmail, demoNumber, demoPassword } from "@/config/constants";
 import dynamic from "next/dynamic";
 import { clearRecaptchaVerifier, FirebaseInstance } from "@/lib/firebase";
 import { ConfirmationResult } from "firebase/auth";
+import { sellerRegister } from "@/routes/api";
 
 const PhoneInput = dynamic(() => import("@/components/Functional/PhoneInput"), {
   ssr: false,
@@ -99,6 +102,21 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
   const [loginMode, setLoginMode] = useState<LoginMode>("mobile");
   const [isEmailReadOnly, setIsEmailReadOnly] = useState(true);
   const [isMobileReadOnly, setIsMobileReadOnly] = useState(true);
+
+  // User type toggle: "customer" or "farmer"
+  const [userType, setUserType] = useState<"customer" | "farmer">("customer");
+
+  // Farmer registration states
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showFarmerSuccessModal, setShowFarmerSuccessModal] = useState(false);
+  const [farmerFormData, setFarmerFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+    password_confirmation: "",
+  });
+  const [farmerErrors, setFarmerErrors] = useState<{ [key: string]: string }>({});
 
   // OTP login states
   const [otpStep, setOtpStep] = useState<OtpStep>("phone");
@@ -562,6 +580,147 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
     }
   };
 
+  // Farmer registration handlers
+  const handleFarmerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFarmerFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error for this field when user starts typing
+    if (farmerErrors[name]) {
+      setFarmerErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateFarmerForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!farmerFormData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!farmerFormData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(farmerFormData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+
+    if (!farmerFormData.mobile.trim()) {
+      newErrors.mobile = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(farmerFormData.mobile.replace(/\D/g, ""))) {
+      newErrors.mobile = "Mobile number must be 10 digits";
+    }
+
+    if (!farmerFormData.password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (farmerFormData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (!farmerFormData.password_confirmation.trim()) {
+      newErrors.password_confirmation = "Please confirm your password";
+    } else if (farmerFormData.password !== farmerFormData.password_confirmation) {
+      newErrors.password_confirmation = "Passwords do not match";
+    }
+
+    setFarmerErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleFarmerSubmit = async () => {
+    if (!validateFarmerForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await sellerRegister({
+        name: farmerFormData.name,
+        email: farmerFormData.email,
+        mobile: farmerFormData.mobile,
+        password: farmerFormData.password,
+        password_confirmation: farmerFormData.password_confirmation,
+        // Required backend fields
+        verification_status: "approved",
+        visibility_status: "visible",
+      } as any);
+
+      console.log("Farmer registration response:", response);
+
+      if (response.success) {
+        // Reset form
+        setFarmerFormData({
+          name: "",
+          email: "",
+          mobile: "",
+          password: "",
+          password_confirmation: "",
+        });
+        setFarmerErrors({});
+
+        // Show success modal instead of just toast
+        setShowFarmerSuccessModal(true);
+      } else {
+        // Handle backend validation errors
+        console.error("Registration error response:", response);
+
+        // Check if response contains field errors
+        if (response.errors && typeof response.errors === "object") {
+          const backendErrors: { [key: string]: string } = {};
+
+          // Map backend field names to form field names
+          for (const [key, value] of Object.entries(response.errors)) {
+            if (Array.isArray(value)) {
+              backendErrors[key] = value[0]; // Get first error message
+            } else if (typeof value === "string") {
+              backendErrors[key] = value;
+            }
+          }
+
+          console.error("Mapped backend errors:", backendErrors);
+          setFarmerErrors(backendErrors);
+        }
+
+        // Show more detailed error message
+        const errorDetails = response.errors
+          ? Object.entries(response.errors)
+              .map(([key, value]) => {
+                if (Array.isArray(value)) {
+                  return value.join(", ");
+                }
+                return value;
+              })
+              .join("\n")
+          : "";
+
+        addToast({
+          title: "Registration Failed",
+          description: errorDetails || response.message || "Please check the form for errors and try again",
+          color: "danger",
+          timeout: 7000,
+        });
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      addToast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+        color: "danger",
+        timeout: 5000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Reset form when modal closes
   const handleModalClose = () => {
     setErrors({});
@@ -572,6 +731,19 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
     setLoginMode("email");
     setIsEmailReadOnly(true);
     setIsMobileReadOnly(true);
+
+    // Reset farmer form
+    setFarmerFormData({
+      name: "",
+      email: "",
+      mobile: "",
+      password: "",
+      password_confirmation: "",
+    });
+    setFarmerErrors({});
+    setShowConfirmPassword(false);
+    setShowFarmerSuccessModal(false);
+    setUserType("customer");
 
     // Reset OTP states
     setOtpPhoneNumber("");
@@ -658,22 +830,53 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
         <ModalContent>
           {() => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <TruckElectric className="text-primary" size={24} />
-                  <h2 className="font-semibold">
-                    {t("login_modal.welcome_title")}
-                  </h2>
+              <ModalHeader className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <TruckElectric className="text-primary" size={24} />
+                    <h2 className="font-semibold">
+                      {userType === "customer"
+                        ? t("login_modal.welcome_title")
+                        : "🌾 Become a Farmer"}
+                    </h2>
+                  </div>
                 </div>
                 <p className="text-sm text-default-500">
-                  {t("login_modal.welcome_subtitle")}
+                  {userType === "customer"
+                    ? t("login_modal.welcome_subtitle")
+                    : "Join our farming community and grow your business"}
                 </p>
+
+                {/* User Type Toggle */}
+                <div className="flex gap-2 w-full mt-2">
+                  <Button
+                    size="md"
+                    variant={userType === "customer" ? "solid" : "bordered"}
+                    color={userType === "customer" ? "primary" : "default"}
+                    className="flex-1 text-base font-semibold"
+                    onPress={() => setUserType("customer")}
+                    startContent={<User size={18} />}
+                  >
+                    Customer
+                  </Button>
+                  <Button
+                    size="md"
+                    variant={userType === "farmer" ? "solid" : "bordered"}
+                    color={userType === "farmer" ? "success" : "default"}
+                    className="flex-1 text-base font-semibold"
+                    onPress={() => setUserType("farmer")}
+                  >
+                    🌾 Farmer
+                  </Button>
+                </div>
               </ModalHeader>
 
               <ModalBody className="py-6">
-                {/* Tabs - Always visible */}
-                <div className="w-full flex justify-center mb-6">
-                  <Tabs
+                {userType === "customer" ? (
+                  <>
+                    {/* Tabs - Always visible for customer */}
+                    <div className="w-full flex justify-center mb-6">
+                      <Tabs
                     selectedKey={loginMode}
                     onSelectionChange={handleTabChange}
                     classNames={{
@@ -936,45 +1139,271 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
                   </Form>
                 )}
 
-                {/* Social Login */}
-                {authSettings?.googleLogin && (
-                  <>
-                    <div className="flex items-center gap-4 mt-6">
-                      <Divider className="flex-1" />
-                      <span className="text-default-500 text-sm">
-                        {t("login_modal.or")}
-                      </span>
-                      <Divider className="flex-1" />
-                    </div>
+                    {/* Social Login */}
+                    {authSettings?.googleLogin && (
+                      <>
+                        <div className="flex items-center gap-4 mt-6">
+                          <Divider className="flex-1" />
+                          <span className="text-default-500 text-sm">
+                            {t("login_modal.or")}
+                          </span>
+                          <Divider className="flex-1" />
+                        </div>
 
-                    <div className="flex flex-col gap-3">
-                      <GoogleLoginBtn
-                        isLoading={isLoading}
-                        onOpenChange={onOpenChange}
-                        setIsLoading={setIsLoading}
-                        context="login"
-                      />
-                    </div>
+                        <div className="flex flex-col gap-3">
+                          <GoogleLoginBtn
+                            isLoading={isLoading}
+                            onOpenChange={onOpenChange}
+                            setIsLoading={setIsLoading}
+                            context="login"
+                          />
+                        </div>
+                      </>
+                    )}
                   </>
+                ) : (
+                  // Farmer Registration Form
+                  <div className="space-y-4 w-full">
+                    {/* Error Banner */}
+                    {Object.keys(farmerErrors).length > 0 && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <p className="text-sm font-semibold text-red-700 mb-2">
+                          Please fix the following errors:
+                        </p>
+                        <ul className="text-sm text-red-600 space-y-1">
+                          {Object.entries(farmerErrors).map(([_key, error]) => (
+                            <li key={_key} className="flex items-start gap-2">
+                              <span>•</span>
+                              <span>{error}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Name */}
+                    <Input
+                      name="name"
+                      label="Full Name"
+                      placeholder="Enter your full name"
+                      value={farmerFormData.name}
+                      onChange={handleFarmerChange}
+                      isInvalid={!!farmerErrors.name}
+                      errorMessage={farmerErrors.name}
+                      startContent={<User className="text-default-400 w-4 h-4" />}
+                    />
+
+                    {/* Email */}
+                    <Input
+                      name="email"
+                      label="Email Address"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={farmerFormData.email}
+                      onChange={handleFarmerChange}
+                      isInvalid={!!farmerErrors.email}
+                      errorMessage={farmerErrors.email}
+                      startContent={<Mail className="text-default-400 w-4 h-4" />}
+                    />
+
+                    {/* Mobile */}
+                    <Input
+                      name="mobile"
+                      label="Mobile Number"
+                      placeholder="10-digit mobile number"
+                      value={farmerFormData.mobile}
+                      onChange={handleFarmerChange}
+                      isInvalid={!!farmerErrors.mobile}
+                      errorMessage={farmerErrors.mobile}
+                      startContent={<Smartphone className="text-default-400 w-4 h-4" />}
+                    />
+
+                    {/* Password */}
+                    <Input
+                      name="password"
+                      label="Password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter password (min. 6 characters)"
+                      value={farmerFormData.password}
+                      onChange={handleFarmerChange}
+                      isInvalid={!!farmerErrors.password}
+                      errorMessage={farmerErrors.password}
+                      startContent={<Lock className="text-default-400 w-4 h-4" />}
+                      endContent={
+                        <button
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="text-default-400 w-4 h-4" />
+                          ) : (
+                            <Eye className="text-default-400 w-4 h-4" />
+                          )}
+                        </button>
+                      }
+                    />
+
+                    {/* Confirm Password */}
+                    <Input
+                      name="password_confirmation"
+                      label="Confirm Password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      value={farmerFormData.password_confirmation}
+                      onChange={handleFarmerChange}
+                      isInvalid={!!farmerErrors.password_confirmation}
+                      errorMessage={farmerErrors.password_confirmation}
+                      startContent={<Lock className="text-default-400 w-4 h-4" />}
+                      endContent={
+                        <button
+                          className="focus:outline-none"
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="text-default-400 w-4 h-4" />
+                          ) : (
+                            <Eye className="text-default-400 w-4 h-4" />
+                          )}
+                        </button>
+                      }
+                    />
+
+                    {/* Submit Button */}
+                    <Button
+                      color="success"
+                      className="w-full font-medium mt-6"
+                      onPress={handleFarmerSubmit}
+                      isLoading={isLoading}
+                    >
+                      Become a Farmer
+                    </Button>
+                  </div>
                 )}
               </ModalBody>
 
               <ModalFooter className="flex items-center justify-center gap-2">
-                <p className="text-center text-sm text-default-500">
-                  {t("login_modal.no_account")}
-                </p>
-                <Link
-                  color="primary"
-                  size="sm"
-                  onClick={() => {
-                    document.getElementById("register-btn")?.click();
-                    handleModalClose();
-                    onClose();
+                {userType === "customer" ? (
+                  <>
+                    <p className="text-center text-sm text-default-500">
+                      {t("login_modal.no_account")}
+                    </p>
+                    <Link
+                      color="primary"
+                      size="sm"
+                      onClick={() => {
+                        document.getElementById("register-btn")?.click();
+                        handleModalClose();
+                        onClose();
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {t("login_modal.create_account")}
+                    </Link>
+                  </>
+                ) : (
+                  <p className="text-center text-sm text-default-500">
+                    Already have a farmer account?{" "}
+                    <Link
+                      color="primary"
+                      size="sm"
+                      onClick={() => setUserType("customer")}
+                      className="cursor-pointer"
+                    >
+                      Switch to Customer Login
+                    </Link>
+                  </p>
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Farmer Registration Success Modal */}
+      <Modal
+        isOpen={showFarmerSuccessModal}
+        onOpenChange={setShowFarmerSuccessModal}
+        backdrop="blur"
+        size="sm"
+        classNames={{
+          base: "rounded-lg",
+          header: "border-b border-divider",
+          footer: "border-t border-divider",
+        }}
+      >
+        <ModalContent>
+          {(onSuccessClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <Sprout className="text-success" size={24} />
+                  <h2 className="font-semibold text-success">
+                    Registration Successful! 🎉
+                  </h2>
+                </div>
+              </ModalHeader>
+
+              <ModalBody className="py-6">
+                <div className="space-y-4">
+                  <div className="bg-success-50 border border-success-200 rounded-lg p-4">
+                    <p className="text-success-900 font-semibold mb-2">
+                      Welcome to FarmersMart! 🌾
+                    </p>
+                    <p className="text-success-800 text-sm">
+                      Your farmer account has been created successfully. A verification email has been sent to your registered email address.
+                    </p>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-blue-900 font-semibold mb-2">
+                      Next Steps:
+                    </p>
+                    <ul className="text-blue-800 text-sm space-y-2">
+                      <li className="flex items-start gap-2">
+                        <span className="font-bold">1.</span>
+                        <span>Check your email for a verification link</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="font-bold">2.</span>
+                        <span>Verify your account to activate your seller dashboard</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="font-bold">3.</span>
+                        <span>Log in to the seller dashboard to start listing products</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <p className="text-default-500 text-sm text-center">
+                    📧 Check your email: <span className="font-semibold">{farmerFormData.email}</span>
+                  </p>
+                </div>
+              </ModalBody>
+
+              <ModalFooter className="flex gap-2">
+                <Button
+                  variant="light"
+                  onPress={() => {
+                    setShowFarmerSuccessModal(false);
+                    onSuccessClose();
                   }}
-                  className="cursor-pointer"
                 >
-                  {t("login_modal.create_account")}
-                </Link>
+                  Continue Shopping
+                </Button>
+                <Button
+                  color="success"
+                  onPress={() => {
+                    window.open("https://backend.farmersmart.ng/seller", "_blank");
+                    setShowFarmerSuccessModal(false);
+                    onSuccessClose();
+                    handleModalClose();
+                  }}
+                  startContent={<Sprout size={16} />}
+                >
+                  Go to Seller Dashboard
+                </Button>
               </ModalFooter>
             </>
           )}
