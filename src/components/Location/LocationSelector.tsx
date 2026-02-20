@@ -268,6 +268,11 @@ const LocationSelector = () => {
 
           setCookie<UserLocation>("userLocation", userLocation);
 
+          // Mark that user has manually confirmed location
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("userLocationConfirmed", "true");
+          }
+
           // Revalidate ALL SWR Cache
           await mutate((key) => key !== "/settings", undefined, {
             revalidate: true,

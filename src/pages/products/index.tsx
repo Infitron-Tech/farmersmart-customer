@@ -21,6 +21,8 @@ import { loadTranslations } from "../../../i18n";
 import PageHead from "@/SEO/PageHead";
 import { useTranslation } from "react-i18next";
 import { Button } from "@heroui/react";
+import { getCookie } from "@/lib/cookies";
+import { UserLocation } from "@/components/Location/types/LocationAutoComplete.types";
 
 interface ProductsPageProps {
   initialProducts: PaginatedResponse<Product[]> | null;
@@ -219,6 +221,37 @@ const ProductsPage: NextPageWithLayout<ProductsPageProps> = ({
       router.events.off("routeChangeComplete", handleRouteChange);
     };
   }, [router.events, router.query]);
+
+  // Auto-open location modal on /products page first visit if using default location
+  useEffect(() => {
+    if (typeof window !== "undefined" && router.isReady) {
+      const hasVisitedProducts = sessionStorage.getItem(
+        "hasVisitedProductsPage"
+      );
+
+      if (!hasVisitedProducts) {
+        // Check if user is using default location (not manually confirmed)
+        const userLocation = getCookie("userLocation") as UserLocation;
+        const isUsingDefaultLocation = !sessionStorage.getItem(
+          "userLocationConfirmed"
+        );
+
+        // Mark that we've visited this page
+        sessionStorage.setItem("hasVisitedProductsPage", "true");
+
+        // Auto-open location modal if using default location
+        if (isUsingDefaultLocation && userLocation?.lat && userLocation?.lng) {
+          // Delay slightly to ensure DOM is ready
+          setTimeout(() => {
+            const locationBtn = document.getElementById("location-modal-btn");
+            if (locationBtn) {
+              locationBtn.click();
+            }
+          }, 500);
+        }
+      }
+    }
+  }, [router.isReady]);
 
   return (
     <>
