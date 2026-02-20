@@ -21,6 +21,7 @@ import {
   Receipt,
   LogOut,
   Settings,
+  Sprout,
 } from "lucide-react";
 
 const ProfileBtn: FC = () => {
@@ -114,6 +115,29 @@ const ProfileBtn: FC = () => {
           >
             {t("profileBtn.transactions")}
           </DropdownItem>
+
+          {/* Show Farmer Dashboard link only for farmer users */}
+          {userData?.access_panel === "seller" && (
+            <>
+              <DropdownItem
+                key="divider"
+                className="h-0 p-0 mb-2 mt-2"
+                isReadOnly
+              />
+              <DropdownItem
+                onClick={() => {
+                  window.open("https://backend.farmersmart.ng/seller", "_blank");
+                }}
+                startContent={<Sprout size={16} className="text-success" />}
+                textValue="Go to Farmer Dashboard"
+                classNames={{
+                  title: "text-xs text-success font-semibold",
+                }}
+              >
+                🌾 Farmer Dashboard
+              </DropdownItem>
+            </>
+          )}
 
           <DropdownItem
             key="logout"
