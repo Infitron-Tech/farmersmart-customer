@@ -30,6 +30,7 @@ const ProfileBtn: FC = () => {
   const userData = useSelector((state: RootState) => state.auth.user);
   const { t } = useTranslation();
 
+
   const handleAction = (key: Key) => {
     const route = key.toString();
     if (route === "logout") {
@@ -64,13 +65,13 @@ const ProfileBtn: FC = () => {
         >
           <DropdownItem
             key="/my-account/"
-            textValue={`${t("profileBtn.signedInAs")} ${userData?.email}`}
+            textValue={`${t("profileBtn.signedInAs")} ${userData?.name || ""}`}
             className="h-14 gap-2"
             startContent={<User size={16} />}
             classNames={{ title: "text-xs" }}
           >
-            <p className="font-semibold">{t("profileBtn.signedInAs")}</p>
-            <p className="font-semibold truncate">{userData?.name}</p>
+            <p className="font-semibold text-xs">{t("profileBtn.signedInAs")}</p>
+            <p className="font-semibold truncate text-xs">{userData?.name}</p>
           </DropdownItem>
 
           <DropdownItem

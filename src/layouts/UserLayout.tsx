@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from "react";
+import React, { FC, ReactNode, useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Bookmark,
   Banknote,
+  Sprout,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
@@ -76,6 +77,12 @@ const UserLayout: FC<UserLayoutProps> = ({ children, activeTab }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [isLightboxOpen, setLightboxOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Mark as hydrated after first render on client
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const menuItems = [
     {
@@ -137,10 +144,72 @@ const UserLayout: FC<UserLayoutProps> = ({ children, activeTab }) => {
     }
   };
 
+  // Build all listbox items including conditional farmer dashboard
+  const getListboxItems = () => {
+    const items: React.ReactElement[] = menuItems.map((item) => (
+      <ListboxItem
+        key={item.key}
+        href={item.href}
+        className={`my-0.5 ${item.isActive ? "bg-default-100" : ""}`}
+        title={item.label}
+        textValue={item.label}
+        endContent={
+          <div className="flex items-center gap-1 text-default-400">
+            <ChevronRight size={16} />
+          </div>
+        }
+        startContent={
+          <IconWrapper className={cn("text-xs")}>
+            {React.createElement(item.icon, {
+              className: "text-foreground/50",
+            })}
+          </IconWrapper>
+        }
+      >
+        {item.label}
+      </ListboxItem>
+    ));
+
+    // Add farmer dashboard only after hydration to avoid hydration mismatch
+    if (isHydrated && userData?.access_panel === "seller") {
+      items.push(
+        <ListboxItem
+          key="farmer-divider"
+          className="h-0 p-0 mb-2 mt-2"
+          isReadOnly
+          textValue="divider"
+        />
+      );
+      items.push(
+        <ListboxItem
+          key="farmer-dashboard-sidebar"
+          onClick={() => window.open("https://backend.farmersmart.ng/seller", "_blank")}
+          className="my-0.5 text-success"
+          title="Go to Farmer Dashboard"
+          textValue={t("userLayout.farmerDashboard") || "Farmer Dashboard"}
+          endContent={
+            <div className="flex items-center gap-1 text-success">
+              <ChevronRight size={16} />
+            </div>
+          }
+          startContent={
+            <IconWrapper className={cn("text-xs text-success")}>
+              <Sprout className="text-success" size={18} />
+            </IconWrapper>
+          }
+        >
+          🌾 {t("userLayout.farmerDashboard") || "Farmer Dashboard"}
+        </ListboxItem>
+      );
+    }
+
+    return items;
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
       {/* Desktop Sidebar - Hidden on mobile */}
-      <aside className="hidden md:block md:max-w-[280px] w-full">
+      <aside className="hidden md:block md:max-w-70 w-full">
         <Card shadow="sm" radius="sm">
           <CardHeader className="flex flex-col text-start items-start w-full">
             <HeroUserClient
@@ -175,33 +244,12 @@ const UserLayout: FC<UserLayoutProps> = ({ children, activeTab }) => {
           <CardBody className="p-0">
             <Listbox
               aria-label="User Menu"
-              className="p-2 gap-0 divide-y divide-default-300/50 dark:divide-default-100/80 bg-content1 max-w-[280px] overflow-visible shadow-none rounded-medium"
+              className="p-2 gap-0 divide-y divide-default-300/50 dark:divide-default-100/80 bg-content1 max-w-70 overflow-visible shadow-none rounded-medium"
               itemClasses={{
                 base: "px-1 rounded-md gap-2 h-10 data-[hover=true]:bg-default-100",
               }}
             >
-              {menuItems.map((item) => (
-                <ListboxItem
-                  key={item.key}
-                  href={item.href}
-                  className={`my-0.5 ${item.isActive ? "bg-default-100" : ""}`}
-                  title={item.label}
-                  endContent={
-                    <div className="flex items-center gap-1 text-default-400">
-                      <ChevronRight size={16} />
-                    </div>
-                  }
-                  startContent={
-                    <IconWrapper className={cn("text-xs")}>
-                      {React.createElement(item.icon, {
-                        className: "text-foreground/50",
-                      })}
-                    </IconWrapper>
-                  }
-                >
-                  {item.label}
-                </ListboxItem>
-              ))}
+              {getListboxItems() as any}
             </Listbox>
           </CardBody>
         </Card>

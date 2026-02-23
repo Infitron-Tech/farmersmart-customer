@@ -3,21 +3,15 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
 
-const LoginModal = dynamic(() => import("@/components/Modals/LoginModal"), {
-  ssr: false,
-});
-
-const ProfileBtn = dynamic(() => import("@/components/ProfileBtn"), {
-  ssr: false,
-});
+const HeaderAuthContent = dynamic(
+  () => import("./HeaderAuthContent"),
+  { ssr: false }
+);
 
 const Header: FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { webSettings } = useSettings();
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
 
   const navLinks = [
     { label: "Features", href: "#features" },
@@ -72,7 +66,7 @@ const Header: FC = () => {
         {/* Right Actions */}
         <div className="flex items-center gap-4">
           <div className="hidden sm:block">
-            {isLoggedIn ? <ProfileBtn /> : <LoginModal />}
+            <HeaderAuthContent />
           </div>
           <button className="bg-linear-to-r from-green-600 to-green-700 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 text-sm md:text-base">
             Download App
@@ -133,7 +127,7 @@ const Header: FC = () => {
               ))}
               <motion.div variants={itemVariants} className="pt-2">
                 <div onClick={() => setIsMenuOpen(false)}>
-                  {isLoggedIn ? <ProfileBtn /> : <LoginModal />}
+                  <HeaderAuthContent />
                 </div>
               </motion.div>
             </div>

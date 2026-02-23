@@ -26,8 +26,6 @@ import {
   MapPin,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
 import { useRouter } from "next/router";
 import { useSettings } from "@/contexts/SettingsContext";
 import CategoryTabs from "./Functional/CategoryTabs";
@@ -44,28 +42,26 @@ const Badge = dynamic(() => import("@heroui/react").then((mod) => mod.Badge), {
   loading: () => <FallbackCartIcon />,
 });
 
-const ProfileBtn = dynamic(() => import("./ProfileBtn"), { ssr: false });
-const LoginModal = dynamic(() => import("./Modals/LoginModal"), { ssr: false });
 const OfflineCartDrawer = dynamic(() => import("./Cart/OfflineCartDrawer"), {
   ssr: false,
 });
+const NavbarAuthContent = dynamic(
+  () => import("./Navbar/NavbarAuthContent"),
+  { ssr: false }
+);
+const NavbarCartContent = dynamic(
+  () => import("./Navbar/NavbarCartContent"),
+  { ssr: false }
+);
 
 export const Navbar: FC = () => {
   const { t } = useTranslation();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDemoWarning, setShowDemoWarning] = useState(true);
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const { webSettings, demoMode, systemSettings } = useSettings();
-  const router = useRouter();
-  const cartCount =
-    useSelector((state: RootState) => state.cart.cartData?.items_count) || 0;
-
-  const offLineCartCount =
-    useSelector((state: RootState) => state.offlineCart.items)?.length || 0;
-
   const {
     isOpen: isOfflineCartOpen,
-    onOpen: openOfflineCart,
     onClose: closeOfflineCart,
   } = useDisclosure();
   const {
@@ -93,11 +89,6 @@ export const Navbar: FC = () => {
     }
   }, [webSettings?.headerScript]);
 
-  useEffect(() => {
-    if (isLoggedIn && isOfflineCartOpen) {
-      closeOfflineCart();
-    }
-  }, [isLoggedIn, isOfflineCartOpen, closeOfflineCart]);
 
   // Menu items with translation keys
   const navMenuItems = [
@@ -180,13 +171,7 @@ export const Navbar: FC = () => {
                 </Link>
               </NavbarBrand>
               <div className="flex items-center gap-4 md:hidden">
-                <NavbarItem>
-                  {isLoggedIn ? (
-                    <ProfileBtn />
-                  ) : (
-                    <LoginModal triggerView="icon" />
-                  )}
-                </NavbarItem>
+                <NavbarAuthContent />
               </div>
             </div>
             <div className="hidden md:flex w-full flex-start">
@@ -236,38 +221,8 @@ export const Navbar: FC = () => {
             <NavbarItem className="flex items-end gap-2">
               <ThemeSwitch />
             </NavbarItem>
-            <NavbarItem>
-              <div className="flex items-center">
-                <Badge
-                  color="primary"
-                  content={
-                    isLoggedIn
-                      ? cartCount || undefined
-                      : offLineCartCount || undefined
-                  }
-                  variant="solid"
-                  classNames={{ badge: "text-xs" }}
-                >
-                  <Link
-                    title={t("cart_title")}
-                    href="#"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      if (isLoggedIn) {
-                        router.push("/cart");
-                      } else {
-                        openOfflineCart();
-                      }
-                    }}
-                  >
-                    <ShoppingCart className="text-default-500 cursor-pointer" />
-                  </Link>
-                </Badge>
-              </div>
-            </NavbarItem>
-            <NavbarItem>
-              {isLoggedIn ? <ProfileBtn /> : <LoginModal />}
-            </NavbarItem>
+            <NavbarCartContent />
+            <NavbarAuthContent />
           </NavbarContent>
 
           {/* Mobile Menu */}

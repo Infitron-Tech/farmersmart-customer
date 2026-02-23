@@ -138,7 +138,7 @@ export default function DefaultLayout({
     maintenanceState.message || systemSettings?.webMaintenanceMessage || null;
 
   return (
-    <div className="flex flex-col min-h-screen w-full items-center">
+    <div className="flex flex-col min-h-screen w-full items-center" suppressHydrationWarning>
       {!isOnline ? (
         <OfflinePage />
       ) : false && isLoading && !isSSR() ? (

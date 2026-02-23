@@ -1,27 +1,16 @@
-import { FC, useState, useLayoutEffect } from "react";
+import { FC } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSettings } from "@/contexts/SettingsContext";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
 import dynamic from "next/dynamic";
 
-const SellerRegisterModal = dynamic(
-  () => import("@/components/Modals/SellerRegisterModal"),
+const BecomeFarmerButton = dynamic(
+  () => import("./BecomeFarmerButton"),
   { ssr: false }
 );
 
 const FooterCTA: FC = () => {
   const { webSettings } = useSettings();
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const userData = useSelector((state: RootState) => state.auth.user);
-  const isFarmer = userData?.access_panel === "seller";
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useLayoutEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsHydrated(true);
-  }, []);
 
   const footerLinks = {
     company: [
@@ -121,29 +110,7 @@ const FooterCTA: FC = () => {
             <motion.div variants={itemVariants} className="space-y-4">
               <h4 className="text-white font-semibold">For Farmers</h4>
               <ul className="space-y-2">
-                {!isLoggedIn && (
-                  <li>
-                    <SellerRegisterModal
-                      trigger={
-                        <button className="hover:text-green-400 transition-colors duration-300 text-sm cursor-pointer">
-                          Become a Farmer
-                        </button>
-                      }
-                    />
-                  </li>
-                )}
-                {isHydrated && isFarmer && (
-                  <li>
-                    <a
-                      href="https://backend.farmersmart.ng/seller"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-green-400 transition-colors duration-300 text-sm"
-                    >
-                      🌾 Farmer Dashboard
-                    </a>
-                  </li>
-                )}
+                <BecomeFarmerButton />
                 {footerLinks.for_farmers.map((link, i) => (
                   <li key={i}>
                     <Link
