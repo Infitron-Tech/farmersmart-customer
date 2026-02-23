@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -14,6 +14,14 @@ const SellerRegisterModal = dynamic(
 const FooterCTA: FC = () => {
   const { webSettings } = useSettings();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const userData = useSelector((state: RootState) => state.auth.user);
+  const isFarmer = userData?.access_panel === "seller";
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsHydrated(true);
+  }, []);
 
   const footerLinks = {
     company: [
@@ -23,7 +31,6 @@ const FooterCTA: FC = () => {
       { label: "Press", href: "#" },
     ],
     for_farmers: [
-      { label: "Farmer Dashboard", href: "#" },
       { label: "Support", href: "#" },
       { label: "Commission Details", href: "#" },
     ],
@@ -123,6 +130,18 @@ const FooterCTA: FC = () => {
                         </button>
                       }
                     />
+                  </li>
+                )}
+                {isHydrated && isFarmer && (
+                  <li>
+                    <a
+                      href="https://backend.farmersmart.ng/seller"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-green-400 transition-colors duration-300 text-sm"
+                    >
+                      🌾 Farmer Dashboard
+                    </a>
                   </li>
                 )}
                 {footerLinks.for_farmers.map((link, i) => (

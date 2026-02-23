@@ -34,6 +34,8 @@ const ProfileBtn: FC = () => {
     const route = key.toString();
     if (route === "logout") {
       onOpen();
+    } else if (route === "farmer-dashboard") {
+      window.open("https://backend.farmersmart.ng/seller", "_blank");
     } else {
       router.push(route);
     }
@@ -117,19 +119,18 @@ const ProfileBtn: FC = () => {
           </DropdownItem>
 
           {/* Show Farmer Dashboard link only for farmer users */}
-          {userData?.access_panel === "seller" && (
+          {userData?.access_panel === "seller" ? (
             <>
               <DropdownItem
-                key="divider"
+                key="farmer-divider"
                 className="h-0 p-0 mb-2 mt-2"
                 isReadOnly
+                textValue=""
               />
               <DropdownItem
-                onClick={() => {
-                  window.open("https://backend.farmersmart.ng/seller", "_blank");
-                }}
+                key="farmer-dashboard"
                 startContent={<Sprout size={16} className="text-success" />}
-                textValue="Go to Farmer Dashboard"
+                textValue="Farmer Dashboard"
                 classNames={{
                   title: "text-xs text-success font-semibold",
                 }}
@@ -137,7 +138,7 @@ const ProfileBtn: FC = () => {
                 🌾 Farmer Dashboard
               </DropdownItem>
             </>
-          )}
+          ) : null}
 
           <DropdownItem
             key="logout"
