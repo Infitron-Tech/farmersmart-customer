@@ -2,17 +2,17 @@ import { FC, memo } from "react";
 import { Card, CardBody, CardFooter, Divider, Badge } from "@heroui/react";
 import { MessageCircle, Eye, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { ForumTopic } from "@/types/Forum";
+import { CommunityTopic } from "@/types/Community";
 import VoteButton from "./VoteButton";
 import { formatDistanceToNow } from "date-fns";
 
-interface ForumTopicCardProps {
-  topic: ForumTopic;
+interface CommunityTopicCardProps {
+  topic: CommunityTopic;
   onVote?: (slug: string) => void;
   isLoading?: boolean;
 }
 
-const ForumTopicCard: FC<ForumTopicCardProps> = memo(
+const CommunityTopicCard: FC<CommunityTopicCardProps> = memo(
   ({ topic, onVote, isLoading = false }) => {
     const handleVote = () => {
       onVote?.(topic.slug);
@@ -88,6 +88,6 @@ const ForumTopicCard: FC<ForumTopicCardProps> = memo(
   },
 );
 
-ForumTopicCard.displayName = "ForumTopicCard";
+CommunityTopicCard.displayName = "CommunityTopicCard";
 
-export default ForumTopicCard;
+export default CommunityTopicCard;

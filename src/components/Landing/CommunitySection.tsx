@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Button, Card, CardBody, Divider, Input, Spacer, addToast } from "@heroui/react";
+import { Button, Card, CardBody, Divider } from "@heroui/react";
 import { MessageSquare, TrendingUp, Eye } from "lucide-react";
 import useSWR from "swr";
 import { useSelector } from "react-redux";
@@ -8,21 +8,19 @@ import { RootState } from "@/lib/redux/store";
 import {
   getForumCategories,
   getForumTopics,
-  createForumTopic,
-  createForumComment,
 } from "@/routes/api";
-import { ForumCategory, ForumTopic } from "@/types/Forum";
+import { CommunityCategory, CommunityTopic } from "@/types/Community";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
-const ForumSection: FC = () => {
+const CommunitySection: FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [topics, setTopics] = useState<ForumTopic[]>([]);
+  const [topics, setTopics] = useState<CommunityTopic[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const { data: categoriesRes } = useSWR("forum/categories", getForumCategories);
-  const categories: ForumCategory[] = categoriesRes?.data || [];
+  const categories: CommunityCategory[] = categoriesRes?.data || [];
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -190,4 +188,4 @@ const ForumSection: FC = () => {
   );
 };
 
-export default ForumSection;
+export default CommunitySection;

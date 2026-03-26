@@ -1,12 +1,12 @@
 import { FC, memo, useState } from "react";
 import { Card, CardBody, Divider, Avatar, Button, Textarea } from "@heroui/react";
 import { formatDistanceToNow } from "date-fns";
-import { ForumComment } from "@/types/Forum";
+import { CommunityComment } from "@/types/Community";
 import VoteButton from "./VoteButton";
 import { Reply, Trash2, Edit2 } from "lucide-react";
 
-interface ForumCommentCardProps {
-  comment: ForumComment;
+interface CommunityCommentCardProps {
+  comment: CommunityComment;
   isNested?: boolean;
   isOwner?: boolean;
   onVote?: () => void;
@@ -17,7 +17,7 @@ interface ForumCommentCardProps {
   isLoggedIn?: boolean;
 }
 
-const ForumCommentCard: FC<ForumCommentCardProps> = memo(
+const CommunityCommentCard: FC<CommunityCommentCardProps> = memo(
   ({
     comment,
     isNested = false,
@@ -131,7 +131,7 @@ const ForumCommentCard: FC<ForumCommentCardProps> = memo(
           <div className="ml-6 mt-3 space-y-3">
             <Divider />
             {comment.replies.map((reply) => (
-              <ForumCommentCard
+              <CommunityCommentCard
                 key={reply.id}
                 comment={reply}
                 isNested
@@ -150,6 +150,6 @@ const ForumCommentCard: FC<ForumCommentCardProps> = memo(
   },
 );
 
-ForumCommentCard.displayName = "ForumCommentCard";
+CommunityCommentCard.displayName = "CommunityCommentCard";
 
-export default ForumCommentCard;
+export default CommunityCommentCard;

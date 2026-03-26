@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { Card, CardBody, CardHeader, Avatar, Divider, Skeleton } from "@heroui/react";
 import useSWR from "swr";
 import { getForumContributors } from "@/routes/api";
-import { ForumContributor } from "@/types/Forum";
+import { CommunityContributor } from "@/types/Community";
 
 const TopContributorsWidget: FC = () => {
   const { data: response, isLoading } = useSWR("forum/contributors", getForumContributors, {
     revalidateOnFocus: false,
   });
 
-  const contributors: ForumContributor[] = response?.data || [];
+  const contributors: CommunityContributor[] = response?.data || [];
 
   return (
     <Card className="border-2 border-gray-100 shadow-none">

@@ -35,12 +35,12 @@ import {
   WishTitle,
 } from "@/types/ApiResponse";
 import {
-  ForumCategory,
-  ForumTopic,
-  ForumTopicDetail,
-  ForumComment,
-  ForumContributor,
-} from "@/types/Forum";
+  CommunityCategory,
+  CommunityTopic,
+  CommunityTopicDetail,
+  CommunityComment,
+  CommunityContributor,
+} from "@/types/Community";
 import {
   AddBalanceParams,
   AddressParams,
@@ -1509,9 +1509,9 @@ export const getSellerReviews = async (params: {
 
 /* <----------------- FORUM API FUNCTIONS --------------------->*/
 
-export const getForumCategories = async (): Promise<ApiResponse<ForumCategory[]>> => {
+export const getForumCategories = async (): Promise<ApiResponse<CommunityCategory[]>> => {
   try {
-    const response = await api.get<ApiResponse<ForumCategory[]>>("/forum/categories");
+    const response = await api.get<ApiResponse<CommunityCategory[]>>("/forum/categories");
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);
@@ -1525,9 +1525,9 @@ export const getForumTopics = async (params: {
   category_slug?: string;
   search?: string;
   sort?: "latest" | "top" | "most_commented";
-}): Promise<PaginatedResponse<ForumTopic[]>> => {
+}): Promise<PaginatedResponse<CommunityTopic[]>> => {
   try {
-    const response = await api.get<PaginatedResponse<ForumTopic[]>>("/forum/topics", {
+    const response = await api.get<PaginatedResponse<CommunityTopic[]>>("/forum/topics", {
       params,
     });
     return response.data;
@@ -1537,9 +1537,9 @@ export const getForumTopics = async (params: {
   }
 };
 
-export const getForumTopic = async (slug: string): Promise<ApiResponse<ForumTopicDetail>> => {
+export const getForumTopic = async (slug: string): Promise<ApiResponse<CommunityTopicDetail>> => {
   try {
-    const response = await api.get<ApiResponse<ForumTopicDetail>>(`/forum/topics/${slug}`);
+    const response = await api.get<ApiResponse<CommunityTopicDetail>>(`/forum/topics/${slug}`);
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);
@@ -1551,9 +1551,9 @@ export const createForumTopic = async (data: {
   forum_category_id: number;
   title: string;
   body: string;
-}): Promise<ApiResponse<ForumTopicDetail>> => {
+}): Promise<ApiResponse<CommunityTopicDetail>> => {
   try {
-    const response = await api.post<ApiResponse<ForumTopicDetail>>("/forum/topics", data);
+    const response = await api.post<ApiResponse<CommunityTopicDetail>>("/forum/topics", data);
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);
@@ -1567,9 +1567,9 @@ export const createForumTopic = async (data: {
 export const updateForumTopic = async (
   slug: string,
   data: Partial<{ title: string; body: string }>,
-): Promise<ApiResponse<ForumTopicDetail>> => {
+): Promise<ApiResponse<CommunityTopicDetail>> => {
   try {
-    const response = await api.put<ApiResponse<ForumTopicDetail>>(
+    const response = await api.put<ApiResponse<CommunityTopicDetail>>(
       `/forum/topics/${slug}`,
       data,
     );
@@ -1600,9 +1600,9 @@ export const getForumComments = async (params: {
   topic_id: number;
   page?: number;
   per_page?: number;
-}): Promise<PaginatedResponse<ForumComment[]>> => {
+}): Promise<PaginatedResponse<CommunityComment[]>> => {
   try {
-    const response = await api.get<PaginatedResponse<ForumComment[]>>("/forum/comments", {
+    const response = await api.get<PaginatedResponse<CommunityComment[]>>("/forum/comments", {
       params,
     });
     return response.data;
@@ -1616,9 +1616,9 @@ export const createForumComment = async (data: {
   forum_topic_id: number;
   body: string;
   parent_id?: number;
-}): Promise<ApiResponse<ForumComment>> => {
+}): Promise<ApiResponse<CommunityComment>> => {
   try {
-    const response = await api.post<ApiResponse<ForumComment>>("/forum/comments", data);
+    const response = await api.post<ApiResponse<CommunityComment>>("/forum/comments", data);
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);
@@ -1632,9 +1632,9 @@ export const createForumComment = async (data: {
 export const updateForumComment = async (
   id: number,
   body: string,
-): Promise<ApiResponse<ForumComment>> => {
+): Promise<ApiResponse<CommunityComment>> => {
   try {
-    const response = await api.put<ApiResponse<ForumComment>>(`/forum/comments/${id}`, {
+    const response = await api.put<ApiResponse<CommunityComment>>(`/forum/comments/${id}`, {
       body,
     });
     return response.data;
@@ -1678,9 +1678,9 @@ export const toggleForumVote = async (data: {
   }
 };
 
-export const getForumContributors = async (): Promise<ApiResponse<ForumContributor[]>> => {
+export const getForumContributors = async (): Promise<ApiResponse<CommunityContributor[]>> => {
   try {
-    const response = await api.get<ApiResponse<ForumContributor[]>>("/forum/contributors");
+    const response = await api.get<ApiResponse<CommunityContributor[]>>("/forum/contributors");
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { Card, CardBody, CardFooter, Divider, Skeleton } from "@heroui/react";
 
-const ForumTopicCardSkeleton: FC = () => {
+const CommunityTopicCardSkeleton: FC = () => {
   return (
     <Card className="border-2 border-gray-100 shadow-none">
       <CardBody className="gap-3">
@@ -26,4 +26,4 @@ const ForumTopicCardSkeleton: FC = () => {
   );
 };
 
-export default ForumTopicCardSkeleton;
+export default CommunityTopicCardSkeleton;

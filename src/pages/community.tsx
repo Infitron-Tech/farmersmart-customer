@@ -29,7 +29,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { getForumCategories, getForumTopics, createForumTopic } from "@/routes/api";
-import { ForumCategory, ForumTopic } from "@/types/Forum";
+import { CommunityCategory, CommunityTopic } from "@/types/Community";
 import LandingLayout from "@/layouts/landing";
 import { NextPageWithLayout } from "@/types";
 
@@ -40,7 +40,7 @@ function CreateTopicForm({
   onSuccess,
   onCancel,
 }: {
-  categories: ForumCategory[];
+  categories: CommunityCategory[];
   onSuccess: () => void;
   onCancel: () => void;
 }) {
@@ -121,7 +121,7 @@ function CreateTopicForm({
 
 // ── Topic Row ────────────────────────────────────────────────────────────────
 
-function TopicRow({ topic }: { topic: ForumTopic }) {
+function TopicRow({ topic }: { topic: CommunityTopic }) {
   const router = useRouter();
   const initial = topic.author?.name?.charAt(0)?.toUpperCase() ?? "?";
   const time = topic.last_activity_at ?? topic.created_at;
@@ -242,8 +242,8 @@ const ForumPage: NextPageWithLayout = () => {
 
   const { data: categoriesRes } = useSWR("forum/categories", getForumCategories);
 
-  const topics: ForumTopic[] = Array.isArray(topicsRes?.data) ? topicsRes.data : [];
-  const categories: ForumCategory[] = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
+  const topics: CommunityTopic[] = Array.isArray(topicsRes?.data) ? topicsRes.data : [];
+  const categories: CommunityCategory[] = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

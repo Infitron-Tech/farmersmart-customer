@@ -1,4 +1,4 @@
-export interface ForumCategory {
+export interface CommunityCategory {
   id: number;
   name: string;
   slug: string;
@@ -7,13 +7,13 @@ export interface ForumCategory {
   topics_count: number;
 }
 
-export interface ForumAuthor {
+export interface CommunityAuthor {
   id: number;
   name: string;
   profile_image: string;
 }
 
-export interface ForumTopic {
+export interface CommunityTopic {
   id: number;
   slug: string;
   title: string;
@@ -26,22 +26,22 @@ export interface ForumTopic {
   has_voted: boolean;
   last_activity_at: string | null;
   created_at: string;
-  category: ForumCategory;
-  author: ForumAuthor;
+  category: CommunityCategory;
+  author: CommunityAuthor;
 }
 
-export interface ForumComment {
+export interface CommunityComment {
   id: number;
   body: string;
   upvotes_count: number;
   has_voted: boolean;
   created_at: string;
   updated_at: string;
-  author: ForumAuthor;
-  replies: ForumComment[];
+  author: CommunityAuthor;
+  replies: CommunityComment[];
 }
 
-export interface ForumContributor {
+export interface CommunityContributor {
   id: number;
   name: string;
   profile_image: string;
@@ -51,14 +51,14 @@ export interface ForumContributor {
   score: number;
 }
 
-export interface PaginatedForumComments {
+export interface PaginatedCommunityComments {
   current_page: number;
   last_page: number;
   per_page: number;
   total: number;
-  data: ForumComment[];
+  data: CommunityComment[];
 }
 
-export interface ForumTopicDetail extends ForumTopic {
-  comments: PaginatedForumComments;
+export interface CommunityTopicDetail extends CommunityTopic {
+  comments: PaginatedCommunityComments;
 }

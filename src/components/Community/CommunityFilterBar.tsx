@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { Input, Select, SelectItem, Button } from "@heroui/react";
 import { Search, Plus } from "lucide-react";
-import { ForumCategory } from "@/types/Forum";
+import { CommunityCategory } from "@/types/Community";
 import Link from "next/link";
 
-interface ForumFilterBarProps {
-  categories: ForumCategory[];
+interface CommunityFilterBarProps {
+  categories: CommunityCategory[];
   selectedCategory?: string;
   selectedSort?: string;
   searchTerm?: string;
@@ -15,7 +15,7 @@ interface ForumFilterBarProps {
   isLoggedIn?: boolean;
 }
 
-const ForumFilterBar: FC<ForumFilterBarProps> = ({
+const CommunityFilterBar: FC<CommunityFilterBarProps> = ({
   categories,
   selectedCategory = "",
   selectedSort = "latest",
@@ -96,4 +96,4 @@ const ForumFilterBar: FC<ForumFilterBarProps> = ({
   );
 };
 
-export default ForumFilterBar;
+export default CommunityFilterBar;

@@ -1,9 +1,9 @@
-import { FC, useState, useEffect } from "react";
+import { FC } from "react";
 import { Card, CardBody, CardHeader, Divider, Skeleton, Badge } from "@heroui/react";
 import Link from "next/link";
 import useSWR from "swr";
 import { getForumCategories } from "@/routes/api";
-import { ForumCategory } from "@/types/Forum";
+import { CommunityCategory } from "@/types/Community";
 
 interface CategoriesWidgetProps {
   selectedSlug?: string;
@@ -14,7 +14,7 @@ const CategoriesWidget: FC<CategoriesWidgetProps> = ({ selectedSlug }) => {
     revalidateOnFocus: false,
   });
 
-  const categories: ForumCategory[] = response?.data || [];
+  const categories: CommunityCategory[] = response?.data || [];
 
   return (
     <Card className="border-2 border-gray-100 shadow-none">
