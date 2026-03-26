@@ -14,7 +14,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Skeleton,
   Divider,
   addToast,
@@ -26,7 +25,6 @@ import {
   MessageSquare,
   Pin,
   Lock,
-  ChevronRight,
   Hash,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -300,7 +298,7 @@ const ForumPage: NextPageWithLayout = () => {
                 >
                   <span
                     className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: cat.color }}
+                    style={{ backgroundColor: cat.color ?? "#6b7280" }}
                   />
                   <span className="flex-1 truncate">{cat.name}</span>
                   <span className="text-xs text-gray-400">{cat.topics_count}</span>
@@ -359,7 +357,7 @@ const ForumPage: NextPageWithLayout = () => {
                     ? "text-white"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
-                style={activeCategory === cat.slug ? { backgroundColor: cat.color } : {}}
+                style={activeCategory === cat.slug ? { backgroundColor: cat.color ?? "#6b7280" } : {}}
               >
                 {cat.name}
               </button>

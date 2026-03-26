@@ -56,34 +56,38 @@ const ForumFilterBar: FC<ForumFilterBarProps> = ({
         <Select
           label="Category"
           selectedKeys={selectedCategory ? [selectedCategory] : []}
-          onChange={(e) => onCategoryChange(e.target.value)}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            onCategoryChange(selected || "");
+          }}
           size="sm"
           className="max-w-xs"
         >
-          <SelectItem key="" value="">
-            All Categories
-          </SelectItem>
-          {categories.map((category) => (
-            <SelectItem key={category.slug} value={category.slug}>
-              {category.name}
-            </SelectItem>
-          ))}
+          <SelectItem key="">All Categories</SelectItem>
+          <>
+            {categories.map((category) => (
+              <SelectItem key={category.slug}>{category.name}</SelectItem>
+            ))}
+          </>
         </Select>
 
         <Select
           label="Sort By"
           selectedKeys={[selectedSort]}
-          onChange={(e) => onSortChange(e.target.value)}
+          onSelectionChange={(keys) => {
+            const selected = Array.from(keys)[0] as string;
+            onSortChange(selected);
+          }}
           size="sm"
           className="max-w-xs"
         >
-          <SelectItem key="latest" value="latest">
+          <SelectItem key="latest">
             Latest
           </SelectItem>
-          <SelectItem key="top" value="top">
+          <SelectItem key="top">
             Top Upvoted
           </SelectItem>
-          <SelectItem key="most_commented" value="most_commented">
+          <SelectItem key="most_commented">
             Most Commented
           </SelectItem>
         </Select>
