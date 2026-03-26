@@ -222,7 +222,7 @@ const ForumPage: NextPageWithLayout = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
   }, []);
 
   // Debounce search
