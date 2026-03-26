@@ -35,6 +35,13 @@ import {
   WishTitle,
 } from "@/types/ApiResponse";
 import {
+  ForumCategory,
+  ForumTopic,
+  ForumTopicDetail,
+  ForumComment,
+  ForumContributor,
+} from "@/types/Forum";
+import {
   AddBalanceParams,
   AddressParams,
   DeductBalanceParams,
@@ -1497,5 +1504,186 @@ export const getSellerReviews = async (params: {
   } catch (error) {
     console.error("API error:", error);
     return fallbackPaginateRes;
+  }
+};
+
+/* <----------------- FORUM API FUNCTIONS --------------------->*/
+
+export const getForumCategories = async (): Promise<ApiResponse<ForumCategory[]>> => {
+  try {
+    const response = await api.get<ApiResponse<ForumCategory[]>>("/forum/categories");
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return fallbackApiRes;
+  }
+};
+
+export const getForumTopics = async (params: {
+  page?: number;
+  per_page?: number;
+  category_slug?: string;
+  search?: string;
+  sort?: "latest" | "top" | "most_commented";
+}): Promise<PaginatedResponse<ForumTopic[]>> => {
+  try {
+    const response = await api.get<PaginatedResponse<ForumTopic[]>>("/forum/topics", {
+      params,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return fallbackPaginateRes;
+  }
+};
+
+export const getForumTopic = async (slug: string): Promise<ApiResponse<ForumTopicDetail>> => {
+  try {
+    const response = await api.get<ApiResponse<ForumTopicDetail>>(`/forum/topics/${slug}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return fallbackApiRes;
+  }
+};
+
+export const createForumTopic = async (data: {
+  forum_category_id: number;
+  title: string;
+  body: string;
+}): Promise<ApiResponse<ForumTopicDetail>> => {
+  try {
+    const response = await api.post<ApiResponse<ForumTopicDetail>>("/forum/topics", data);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const updateForumTopic = async (
+  slug: string,
+  data: Partial<{ title: string; body: string }>,
+): Promise<ApiResponse<ForumTopicDetail>> => {
+  try {
+    const response = await api.put<ApiResponse<ForumTopicDetail>>(
+      `/forum/topics/${slug}`,
+      data,
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const deleteForumTopic = async (slug: string): Promise<ApiResponse<{}>> => {
+  try {
+    const response = await api.delete<ApiResponse<{}>>(`/forum/topics/${slug}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const getForumComments = async (params: {
+  topic_id: number;
+  page?: number;
+  per_page?: number;
+}): Promise<PaginatedResponse<ForumComment[]>> => {
+  try {
+    const response = await api.get<PaginatedResponse<ForumComment[]>>("/forum/comments", {
+      params,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return fallbackPaginateRes;
+  }
+};
+
+export const createForumComment = async (data: {
+  forum_topic_id: number;
+  body: string;
+  parent_id?: number;
+}): Promise<ApiResponse<ForumComment>> => {
+  try {
+    const response = await api.post<ApiResponse<ForumComment>>("/forum/comments", data);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const updateForumComment = async (
+  id: number,
+  body: string,
+): Promise<ApiResponse<ForumComment>> => {
+  try {
+    const response = await api.put<ApiResponse<ForumComment>>(`/forum/comments/${id}`, {
+      body,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const deleteForumComment = async (id: number): Promise<ApiResponse<{}>> => {
+  try {
+    const response = await api.delete<ApiResponse<{}>>(`/forum/comments/${id}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const toggleForumVote = async (data: {
+  votable_type: "topic" | "comment";
+  votable_id: number;
+}): Promise<ApiResponse<{ voted: boolean; upvotes_count: number }>> => {
+  try {
+    const response = await api.post<
+      ApiResponse<{ voted: boolean; upvotes_count: number }>
+    >("/forum/votes", data);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const getForumContributors = async (): Promise<ApiResponse<ForumContributor[]>> => {
+  try {
+    const response = await api.get<ApiResponse<ForumContributor[]>>("/forum/contributors");
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    return fallbackApiRes;
   }
 };

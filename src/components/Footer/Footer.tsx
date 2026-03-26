@@ -113,6 +113,7 @@ const Footer: FC = () => {
                     href: "/about-us",
                   },
                   { label: t("footer.quick_links.faqs"), href: "/faqs" },
+                  { label: "Forum", href: "/forum" },
                   { label: t("footer.quick_links.stores"), href: "/stores" },
                 ].map(({ label, href }) => (
                   <Link
@@ -323,7 +324,7 @@ const Footer: FC = () => {
                     href: "/about-us",
                   },
                   { label: t("footer.quick_links.faqs"), href: "/faqs" },
-
+                  { label: "Forum", href: "/forum" },
                   { label: t("footer.quick_links.stores"), href: "/stores" },
                   {
                     label: t("footer.quick_links.delivery_zones"),

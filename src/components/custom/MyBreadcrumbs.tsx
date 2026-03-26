@@ -19,7 +19,7 @@ interface MyBreadcrumbsProps {
 }
 
 const MyBreadcrumbs: React.FC<MyBreadcrumbsProps> = ({
-  breadcrumbs,
+  breadcrumbs = [],
   maxItems = 4,
   itemsBeforeCollapse = 1,
   itemsAfterCollapse = 2,
@@ -34,7 +34,7 @@ const MyBreadcrumbs: React.FC<MyBreadcrumbsProps> = ({
     startContent: <Home size={12} />,
   };
 
-  const allBreadcrumbs = [defaultBreadcrumb, ...breadcrumbs];
+  const allBreadcrumbs = [defaultBreadcrumb, ...(Array.isArray(breadcrumbs) ? breadcrumbs : [])];
 
   return (
     <Breadcrumbs

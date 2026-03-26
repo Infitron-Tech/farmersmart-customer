@@ -28,6 +28,7 @@
     "clsx": "2.1.1",
     "cookie": "^1.1.1",
     "country-list-with-dial-code-and-flag": "^5.1.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "firebase": "^12.7.0",
     "framer-motion": "12.26.0",

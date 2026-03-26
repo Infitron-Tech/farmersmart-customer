@@ -24,6 +24,7 @@ import {
   Info,
   X,
   MapPin,
+  MessageSquare,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -96,6 +97,7 @@ export const Navbar: FC = () => {
     { label: t("nav.products"), href: "/products", icon: Package },
     { label: "Farms", href: "/stores", icon: MapPin },
     { label: t("nav.brands"), href: "/brands", icon: Tags },
+    { label: "Forum", href: "/forum", icon: MessageSquare },
     { label: t("nav.faqs"), href: "/faqs", icon: HelpCircle },
     { label: t("nav.about_us"), href: "/about-us", icon: Info },
   ];
@@ -209,6 +211,16 @@ export const Navbar: FC = () => {
               >
                 <MapPin size={18} />
                 <span>Farms</span>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link
+                color="foreground"
+                href="/forum"
+                className="flex items-center gap-2 hover:text-primary transition-colors"
+              >
+                <MessageSquare size={18} />
+                <span>Forum</span>
               </Link>
             </NavbarItem>
           </NavbarContent>
