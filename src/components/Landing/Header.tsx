@@ -17,6 +17,7 @@ const Header: FC = () => {
     { label: "Features", href: "#features" },
     { label: "How It Works", href: "#how-it-works" },
     { label: "Marketplace", href: "/products" },
+    { label: "Community", href: "/community" },
     { label: "About", href: "/about-us" },
   ];
 

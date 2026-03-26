@@ -15,7 +15,7 @@ const FooterCTA: FC = () => {
   const footerLinks = {
     company: [
       { label: "About Us", href: "/about-us" },
-      { label: "Forum", href: "/forum" },
+      { label: "Community", href: "/community" },
       { label: "Careers", href: "#" },
       { label: "Blog", href: "#" },
       { label: "Press", href: "#" },

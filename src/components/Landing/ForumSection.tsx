@@ -64,7 +64,7 @@ const ForumSection: FC = () => {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl font-bold mb-4">Community Forum</h2>
+          <h2 className="text-4xl font-bold mb-4">Community</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Connect with farmers, share experiences, and get answers to your questions
           </p>
@@ -179,9 +179,9 @@ const ForumSection: FC = () => {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <Link href="/forum">
+          <Link href="/community">
             <Button size="lg" color="primary">
-              Explore Full Forum →
+              Explore Community →
             </Button>
           </Link>
         </motion.div>

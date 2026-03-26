@@ -42,6 +42,7 @@ const FailedItemsModal = dynamic(
 interface LandingLayoutProps {
   children?: React.ReactNode;
   initialSettings?: Settings | null;
+  showCTABanner?: boolean;
 }
 
 /**
@@ -52,6 +53,7 @@ interface LandingLayoutProps {
 export default function LandingLayout({
   children,
   initialSettings,
+  showCTABanner = true,
 }: LandingLayoutProps) {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [maintenanceState, setMaintenanceState] = useState(
@@ -220,7 +222,7 @@ export default function LandingLayout({
                 </main>
 
                 {/* Landing CTA Banner */}
-                <FooterCTABanner />
+                {showCTABanner && <FooterCTABanner />}
 
                 {/* Landing Footer */}
                 <FooterCTA />
