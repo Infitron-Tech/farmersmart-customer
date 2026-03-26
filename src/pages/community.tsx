@@ -214,16 +214,11 @@ function TopicRowSkeleton() {
 
 const ForumPage: NextPageWithLayout = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const [isMounted, setIsMounted] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<"latest" | "top" | "most_commented">("latest");
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
-  }, []);
 
   // Debounce search
   useEffect(() => {
@@ -260,7 +255,7 @@ const ForumPage: NextPageWithLayout = () => {
             Ask questions, share tips, connect with farmers
           </p>
         </div>
-        {isMounted && isLoggedIn && (
+        {isLoggedIn && (
           <Button
             color="primary"
             startContent={<Plus size={18} />}
@@ -402,7 +397,7 @@ const ForumPage: NextPageWithLayout = () => {
       </div>
 
       {/* ── Mobile FAB ── */}
-      {isMounted && isLoggedIn && (
+      {isLoggedIn && (
         <button
           onClick={() => setShowModal(true)}
           className="lg:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary shadow-lg flex items-center justify-center text-white hover:bg-primary-600 active:scale-95 transition-all"
