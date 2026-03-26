@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
@@ -135,9 +136,11 @@ function TopicRow({ topic }: { topic: ForumTopic }) {
       {/* Avatar */}
       <div className="flex-shrink-0">
         {topic.author?.profile_image ? (
-          <img
+          <Image
             src={topic.author.profile_image}
             alt={topic.author.name}
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full object-cover"
           />
         ) : (

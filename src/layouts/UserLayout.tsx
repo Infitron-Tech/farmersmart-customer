@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState, useEffect } from "react";
+import React, { FC, ReactNode, useState, useSyncExternalStore } from "react";
 import {
   Card,
   CardHeader,
@@ -77,12 +77,13 @@ const UserLayout: FC<UserLayoutProps> = ({ children, activeTab }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const [isLightboxOpen, setLightboxOpen] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Mark as hydrated after first render on client
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
+  // Detect client-side hydration without ESLint violations
+  const isHydrated = useSyncExternalStore(
+    () => () => {},   // subscribe: no-op (value never changes)
+    () => true,        // getSnapshot (client): always true
+    () => false,       // getServerSnapshot (SSR): always false
+  );
 
   const menuItems = [
     {
