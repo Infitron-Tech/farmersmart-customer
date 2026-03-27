@@ -356,7 +356,26 @@
     "photosUploaded": "photos uploaded",
     "otp": "OTP",
     "confirmPhone": "I confirm that I have received a verification code on my phone",
-    "noMethodsAvailable": "No delivery methods available for this location"
+    "noMethodsAvailable": "No delivery methods available for this location",
+    "selectAddress": "Select Delivery Address",
+    "selectAddressDescription": "Please select a delivery address to proceed",
+    "selectMethod": "Select Delivery Method",
+    "selectMethodDescription": "Choose how you want to receive your order",
+    "free": "Free",
+    "photoLimitError": {
+      "title": "Photo Limit",
+      "description": "You can upload a maximum of 5 photos"
+    },
+    "photoValidation": {
+      "description": "Please upload between 1 and 5 photos"
+    },
+    "otpValidation": {
+      "description": "OTP must be exactly 6 digits"
+    },
+    "phoneConfirmation": {
+      "description": "Please confirm your phone number"
+    },
+    "otpExpiryWarning": "OTP expires in 10 minutes. Maximum 3 attempts allowed."
   },
   "deliveryCharge": "Delivery Charge",
   "deliveryFee": "Delivery Fee:",
