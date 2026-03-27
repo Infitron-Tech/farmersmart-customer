@@ -301,7 +301,19 @@
     "selfPickup": {
       "verify": "Verify Self-Pickup Items",
       "verifyDescription": "Please verify the condition of each item you've picked up. Mark any discrepancies found.",
-      "verified": "Self-pickup verified successfully"
+      "verified": "Self-pickup verified successfully",
+      "initiatePickup": "Initiate Pickup",
+      "initiate": "Initiate Self-Pickup",
+      "ready": "Your order is ready for pickup",
+      "initiateDescription": "Tap 'Confirm Pickup' when you arrive at the store to collect your order.",
+      "steps": "What happens next:",
+      "step1": "Confirm pickup when you arrive at store",
+      "step2": "Collect your order from the store",
+      "step3": "Verify items in the next step",
+      "confirmPickup": "Confirm Pickup",
+      "initiateSuccess": "Order marked as picked up. Please verify items.",
+      "initiateFailed": "Failed to mark order as picked up",
+      "success": "Success"
     },
     "condition": {
       "good": "Good",
@@ -1856,5 +1868,8 @@
   "attachments": "Attachments",
   "openInNewTab": "Open in new tab",
   "please_select_variant": "Please select a variant",
-  "preview": "Preview"
+  "preview": "Preview",
+  "common": {
+    "processing": "Processing..."
+  }
 }

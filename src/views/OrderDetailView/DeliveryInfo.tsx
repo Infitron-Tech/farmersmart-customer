@@ -1,12 +1,13 @@
 import { getOrderStatusBtnConfig } from "@/helpers/getters";
 import { Order } from "@/types/ApiResponse";
 import { Avatar, Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { Edit, Phone, Star, Truck, CheckCircle, AlertCircle } from "lucide-react";
+import { Edit, Phone, Star, Truck, CheckCircle, AlertCircle, MapPin } from "lucide-react";
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 interface DeliveryInfoProps {
   order: Order;
   onDeliveryRatingOpen: () => void;
+  onInitiateSelfPickupOpen?: () => void;
   onSelfPickupVerifyOpen?: () => void;
   onFarmerVerifyOpen?: () => void;
 }
@@ -14,6 +15,7 @@ interface DeliveryInfoProps {
 const DeliveryInfo: FC<DeliveryInfoProps> = ({
   order,
   onDeliveryRatingOpen,
+  onInitiateSelfPickupOpen,
   onSelfPickupVerifyOpen,
   onFarmerVerifyOpen,
 }) => {
@@ -22,12 +24,16 @@ const DeliveryInfo: FC<DeliveryInfoProps> = ({
 
   const isSelfPickupReady =
     order.fulfillment_type === "self_pickup" &&
-    (order.status === "ready_for_pickup" ||
-      order.status === "partially_accepted");
+    order.status === "ready_for_pickup";
 
   const isSelfPickupDelivered =
     order.fulfillment_type === "self_pickup" &&
     order.status === "delivered";
+
+  // Check if any items have been picked up
+  const itemsPickedUp =
+    order.items &&
+    order.items.some((item: any) => item.status === "picked_up");
 
   const isFarmerOutForDelivery =
     order.fulfillment_type === "farmer_delivery" &&
@@ -47,7 +53,19 @@ const DeliveryInfo: FC<DeliveryInfoProps> = ({
               {t("delivery_info")}
             </h3>
           </div>
-          {isSelfPickupReady && onSelfPickupVerifyOpen && (
+          {isSelfPickupReady && !itemsPickedUp && onInitiateSelfPickupOpen && (
+            <Button
+              size="sm"
+              color="warning"
+              variant="flat"
+              className="text-xs"
+              onPress={onInitiateSelfPickupOpen}
+              startContent={<MapPin className="w-4 h-4" />}
+            >
+              {t("delivery.selfPickup.initiatePickup") || "Initiate Pickup"}
+            </Button>
+          )}
+          {isSelfPickupReady && itemsPickedUp && onSelfPickupVerifyOpen && (
             <Button
               size="sm"
               color="primary"

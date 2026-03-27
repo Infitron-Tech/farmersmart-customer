@@ -2,6 +2,7 @@ import MyBreadcrumbs from "@/components/custom/MyBreadcrumbs";
 import RatingModal from "@/components/Modals/RatingModal";
 import ReturnOrderItemModal from "@/components/Modals/ReturnOrderItemModal";
 import SelfPickupVerificationModal from "@/components/Modals/SelfPickupVerificationModal";
+import InitiateSelfPickupModal from "@/components/Modals/InitiateSelfPickupModal";
 import DeliveryVerificationModal from "@/components/Modals/DeliveryVerificationModal";
 import { orderStatusColorMap } from "@/config/constants";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -84,6 +85,12 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
     isOpen: isReturnOpen,
     onOpen: onReturnOpen,
     onClose: onReturnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isInitiateSelfPickupOpen,
+    onOpen: onInitiateSelfPickupOpen,
+    onClose: onInitiateSelfPickupClose,
   } = useDisclosure();
 
   const {
@@ -229,6 +236,7 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
               <DeliveryInfo
                 order={order}
                 onDeliveryRatingOpen={onDeliveryRatingOpen}
+                onInitiateSelfPickupOpen={onInitiateSelfPickupOpen}
                 onSelfPickupVerifyOpen={onSelfPickupVerifyOpen}
                 onFarmerVerifyOpen={onFarmerVerifyOpen}
               />
@@ -303,6 +311,20 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
           order={order}
           onItemCancelled={onCancelClose}
         />
+        {/* Initiate Self-Pickup Modal */}
+        {order.fulfillment_type === "self_pickup" &&
+          order.status === "ready_for_pickup" && (
+            <InitiateSelfPickupModal
+              isOpen={isInitiateSelfPickupOpen}
+              onOpenChange={onInitiateSelfPickupClose}
+              orderId={order.id}
+              onSuccess={() => {
+                router.push("/my-account/orders").then(() => {
+                  router.push(`/my-account/orders/${order.slug}`);
+                });
+              }}
+            />
+          )}
         {/* Self-Pickup Verification Modal */}
         {order.fulfillment_type === "self_pickup" &&
           (order.status === "ready_for_pickup" ||
