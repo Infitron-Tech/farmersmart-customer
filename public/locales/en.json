@@ -355,7 +355,8 @@
     "uploadPhotos": "Click to upload photos",
     "photosUploaded": "photos uploaded",
     "otp": "OTP",
-    "confirmPhone": "I confirm that I have received a verification code on my phone"
+    "confirmPhone": "I confirm that I have received a verification code on my phone",
+    "noMethodsAvailable": "No delivery methods available for this location"
   },
   "deliveryCharge": "Delivery Charge",
   "deliveryFee": "Delivery Fee:",
