@@ -6,6 +6,7 @@ import { RootState } from "@/lib/redux/store";
 import { setDeliveryMethod, setDeliveryFee } from "@/lib/redux/slices/checkoutSlice";
 import { getAvailableDeliveryMethods, calculateDeliveryFee } from "@/routes/api";
 import { useTranslation } from "react-i18next";
+import { useSettings } from "@/contexts/SettingsContext";
 import { updateCartData } from "@/helpers/updators";
 
 interface DeliveryOption {
@@ -20,6 +21,7 @@ interface DeliveryOption {
 const DeliveryMethodSelector: FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const { currencySymbol } = useSettings();
   const [isLoading, setIsLoading] = useState(false);
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [selectedMethod, setSelectedMethod] = useState<string>("");
@@ -29,9 +31,6 @@ const DeliveryMethodSelector: FC = () => {
   );
   const cartDeliveryMethod = useSelector(
     (state: RootState) => state.checkout.deliveryMethod
-  );
-  const { currencySymbol } = useSelector(
-    (state: RootState) => state.settings
   );
 
   const cartData = useSelector(
