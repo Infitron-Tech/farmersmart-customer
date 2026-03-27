@@ -1,4 +1,3 @@
-
 {
   "about_us": "About Us",
   "addToBucket": "Add to Bucket",
@@ -298,7 +297,54 @@
   "delete": "Delete",
   "delivering_to": "Delivering to",
   "delivering_to_your_location": "Delivering to your location",
-  "delivery": "Delivery",
+  "delivery": {
+    "selfPickup": {
+      "verify": "Verify Self-Pickup Items",
+      "verifyDescription": "Please verify the condition of each item you've picked up. Mark any discrepancies found.",
+      "verified": "Self-pickup verified successfully"
+    },
+    "condition": {
+      "good": "Good",
+      "damaged": "Damaged",
+      "missing": "Missing"
+    },
+    "discrepancy": {
+      "missing": "Missing Items",
+      "damaged": "Damaged Items",
+      "wrongQty": "Wrong Quantity",
+      "wrongItem": "Wrong Item"
+    },
+    "verification": {
+      "success": {
+        "title": "Success",
+        "description": "Delivery verification completed successfully"
+      },
+      "failed": {
+        "title": "Verification Failed",
+        "description": "Failed to complete verification"
+      }
+    },
+    "verifyAllItems": "Please verify all items before submitting",
+    "verifyItems": "Verify Items",
+    "reportDiscrepancy": "Report Discrepancy",
+    "expected": "Expected",
+    "actual": "Actual",
+    "notes": "Additional notes...",
+    "addDetails": "Add Details",
+    "verificationSummary": "Verification Summary",
+    "itemsVerified": "Items Verified",
+    "discrepanciesFound": "Discrepancies Found",
+    "completeVerification": "Complete Verification",
+    "farmer": "Farmer/Seller",
+    "expectedDelivery": "Expected Delivery",
+    "calculatingTime": "Calculating...",
+    "farmerOnTheWay": "Farmer is on the way to deliver your order",
+    "verified": "Verified",
+    "uploadPhotos": "Click to upload photos",
+    "photosUploaded": "photos uploaded",
+    "otp": "OTP",
+    "confirmPhone": "I confirm that I have received a verification code on my phone"
+  },
   "deliveryCharge": "Delivery Charge",
   "deliveryFee": "Delivery Fee:",
   "deliveryPartner": "Delivery Partner",
@@ -994,7 +1040,6 @@
       "personalInfo": "Personal Information",
       "requiredDocs": "Required Documents",
       "businessAddress": "Business Address",
-
       "form": {
         "sellerName": "Seller Name",
         "mobile": "Mobile Number",
@@ -1010,7 +1055,6 @@
         "latitude": "Latitude",
         "longitude": "Longitude"
       },
-
       "placeholder": {
         "sellerName": "Enter your full name",
         "mobile": "Enter your mobile number",
@@ -1024,20 +1068,17 @@
         "latitude": "e.g. 23.241999",
         "longitude": "e.g. 69.666881"
       },
-
       "docs": {
         "businessLicense": "Business License",
         "articlesOfIncorporation": "Articles of Incorporation",
         "nationalId": "National ID Card",
         "authorizedSignature": "Authorized Signature"
       },
-
       "button": {
         "chooseFile": "Choose File",
         "register": "Register",
         "reset": "Reset"
       },
-
       "toast": {
         "invalidFileTitle": "Invalid File Type",
         "invalidFileDescription": "Only JPEG, PNG, JPG, or WEBP files are allowed.",
@@ -1053,7 +1094,6 @@
         "invalidFileTypeTitle": "Invalid File Type",
         "invalidFileTypeDesc": "Only JPEG, PNG, JPG, or WEBP allowed. Invalid: {{types}}"
       },
-
       "error": {
         "required": "Required",
         "passwordMismatch": "Passwords must match",
@@ -1752,14 +1792,11 @@
   "sellerReviews": {
     "title": "{{count}} Reviews",
     "subtitle": "{{count}} of {{total}} reviews",
-
     "sortAriaLabel": "Sort reviews",
-
     "sort": {
       "latest": "Latest",
       "oldest": "Oldest"
     },
-
     "error": "Failed to load reviews. Please try again.",
     "noData": "No reviews found."
   },
@@ -1778,7 +1815,6 @@
     "empty": "No removed items",
     "close": "Close"
   },
-
   "failedItems": {
     "singleTitle": "Unable to add item to cart",
     "multipleTitle": "Unable to add some items to cart",
@@ -1789,7 +1825,6 @@
     "empty": "No failed items",
     "okay": "Okay"
   },
-
   "handlingCharges": "Handling Charges",
   "dropOffFee": "Drop-off Fee",
   "promoDiscountApplied": "Promo Discount Applied",
