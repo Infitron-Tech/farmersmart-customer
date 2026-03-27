@@ -14,6 +14,7 @@ import { setOrderNote } from "@/lib/redux/slices/checkoutSlice";
 import { useDispatch } from "react-redux";
 import { debounce } from "lodash";
 import ExpressDelivery from "@/components/Cart/ExpressDelivery";
+import DeliveryMethodSelector from "@/components/Cart/DeliveryMethodSelector";
 import PromoCodeSection from "@/components/Cart/PromoCodeSection";
 import SimilarProductsSection from "@/components/Products/ProductDetailPage/SimilarProductsSection";
 import useSWR from "swr";
@@ -84,6 +85,7 @@ const CartAdditionalInfo: FC<CartAdditionalInfoProps> = ({ cart }) => {
         className="hidden"
       />
       <AddressSection onAddAddressModalOpen={onAddressModalOpen} />
+      <DeliveryMethodSelector />
       <ExpressDelivery />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

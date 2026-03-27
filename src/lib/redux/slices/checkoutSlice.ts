@@ -7,6 +7,8 @@ export interface CheckoutState {
   useWallet: boolean;
   rushDelivery: boolean;
   promoCode: string;
+  deliveryMethod: string | null;
+  deliveryFee: number;
 }
 
 const initialState: CheckoutState = {
@@ -15,6 +17,8 @@ const initialState: CheckoutState = {
   useWallet: false,
   rushDelivery: false,
   promoCode: "",
+  deliveryMethod: null,
+  deliveryFee: 0,
 };
 
 const checkoutSlice = createSlice({
@@ -36,6 +40,12 @@ const checkoutSlice = createSlice({
     setPromoCode: (state, action: PayloadAction<string>) => {
       state.promoCode = action.payload;
     },
+    setDeliveryMethod: (state, action: PayloadAction<string | null>) => {
+      state.deliveryMethod = action.payload;
+    },
+    setDeliveryFee: (state, action: PayloadAction<number>) => {
+      state.deliveryFee = action.payload;
+    },
   },
 });
 
@@ -45,5 +55,7 @@ export const {
   setUseWallet,
   setRusDelivery,
   setPromoCode,
+  setDeliveryMethod,
+  setDeliveryFee,
 } = checkoutSlice.actions;
 export default checkoutSlice.reducer;

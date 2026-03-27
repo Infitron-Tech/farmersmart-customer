@@ -1,31 +1,70 @@
 import { getOrderStatusBtnConfig } from "@/helpers/getters";
 import { Order } from "@/types/ApiResponse";
 import { Avatar, Button, Card, CardBody, CardHeader } from "@heroui/react";
-import { Edit, Phone, Star, Truck } from "lucide-react";
+import { Edit, Phone, Star, Truck, CheckCircle, AlertCircle } from "lucide-react";
 import React, { FC } from "react";
 import { useTranslation } from "react-i18next";
 interface DeliveryInfoProps {
   order: Order;
   onDeliveryRatingOpen: () => void;
+  onSelfPickupVerifyOpen?: () => void;
+  onFarmerVerifyOpen?: () => void;
 }
 // DeliveryInfo component
 const DeliveryInfo: FC<DeliveryInfoProps> = ({
   order,
   onDeliveryRatingOpen,
+  onSelfPickupVerifyOpen,
+  onFarmerVerifyOpen,
 }) => {
   const buttonConfig = getOrderStatusBtnConfig(order.status);
   const { t } = useTranslation();
 
+  const isSelfPickupReady =
+    order.fulfillment_type === "self_pickup" &&
+    (order.status === "ready_for_pickup" ||
+      order.status === "partially_accepted");
+
+  const isSelfPickupDelivered =
+    order.fulfillment_type === "self_pickup" &&
+    order.status === "delivered";
+
+  const isFarmerOutForDelivery =
+    order.fulfillment_type === "farmer_delivery" &&
+    order.status === "out_for_delivery";
+
+  const isFarmerDelivered =
+    order.fulfillment_type === "farmer_delivery" &&
+    order.status === "delivered";
+
   return (
     <>
       <Card shadow="sm" radius="sm">
-        <CardHeader className="pb-2">
+        <CardHeader className="pb-2 flex justify-between w-full items-start">
           <div className="flex items-center gap-2">
             <Truck className="w-4 h-4 text-gray-600 dark:text-gray-300" />
             <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {t("delivery_info")}
             </h3>
           </div>
+          {isSelfPickupReady && onSelfPickupVerifyOpen && (
+            <Button
+              size="sm"
+              color="primary"
+              variant="flat"
+              className="text-xs"
+              onPress={onSelfPickupVerifyOpen}
+              startContent={<CheckCircle className="w-4 h-4" />}
+            >
+              {t("delivery.verifyItems") || "Verify Items"}
+            </Button>
+          )}
+          {isSelfPickupDelivered && (
+            <div className="flex items-center gap-1 text-xs text-green-600">
+              <CheckCircle className="w-4 h-4" />
+              <span>{t("delivery.verified") || "Verified"}</span>
+            </div>
+          )}
         </CardHeader>
         <CardBody className="pt-0">
           <div className="space-y-2 text-xs">
@@ -34,7 +73,7 @@ const DeliveryInfo: FC<DeliveryInfoProps> = ({
                 {t("fulfillmentType")}
               </span>
               <span className="text-gray-900 dark:text-gray-100 capitalize">
-                {order.fulfillment_type}
+                {order.fulfillment_type?.replace("_", " ")}
               </span>
             </div>
             {buttonConfig.deliveryTime ? (
@@ -132,6 +171,58 @@ const DeliveryInfo: FC<DeliveryInfoProps> = ({
                   </div>
                 )}
               </div>
+            </div>
+          </CardBody>
+        </Card>
+      )}
+      {/* Farmer Delivery Card */}
+      {order.delivery_partner_type === "farmer" && order.delivery_partner_id && (
+        <Card shadow="sm" radius="sm">
+          <CardHeader className="pb-2 flex justify-between w-full items-start">
+            <div className="flex items-center gap-2">
+              <Truck className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                {t("delivery.farmer") || "Farmer/Seller"}
+              </h3>
+            </div>
+            {isFarmerOutForDelivery && onFarmerVerifyOpen && (
+              <Button
+                size="sm"
+                color="primary"
+                variant="flat"
+                className="text-xs"
+                onPress={onFarmerVerifyOpen}
+                startContent={<CheckCircle className="w-4 h-4" />}
+              >
+                {t("delivery.completeVerification") || "Verify"}
+              </Button>
+            )}
+            {isFarmerDelivered && (
+              <div className="flex items-center gap-1 text-xs text-green-600">
+                <CheckCircle className="w-4 h-4" />
+                <span>{t("delivery.verified") || "Verified"}</span>
+              </div>
+            )}
+          </CardHeader>
+          <CardBody className="pt-0">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                {t("delivery.expectedDelivery") || "Expected Delivery"}
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                {order.estimated_delivery_time
+                  ? `${order.estimated_delivery_time} ${t("mins") || "minutes"}`
+                  : t("delivery.calculatingTime") || "Calculating..."}
+              </p>
+              {order.status === "out_for_delivery" && (
+                <div className="flex items-center gap-2 p-2 bg-orange-50 dark:bg-orange-900/20 rounded-md mt-2">
+                  <AlertCircle className="w-4 h-4 text-orange-600" />
+                  <span className="text-xs text-orange-700 dark:text-orange-300">
+                    {t("delivery.farmerOnTheWay") ||
+                      "Farmer is on the way to deliver your order"}
+                  </span>
+                </div>
+              )}
             </div>
           </CardBody>
         </Card>

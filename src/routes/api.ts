@@ -1687,3 +1687,139 @@ export const getForumContributors = async (): Promise<ApiResponse<CommunityContr
     return fallbackApiRes;
   }
 };
+
+/* <-------------- Delivery API Functions ------------> */
+
+export const getAvailableDeliveryMethods = async (orderId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.get<ApiResponse<any>>(`/user/delivery/available-methods/${orderId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const validateDeliveryMethod = async (data: {
+  order_id: number;
+  delivery_method: string;
+}): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.post<ApiResponse<any>>("/user/delivery/validate-method", data);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const calculateDeliveryFee = async (data: {
+  order_id: number;
+  delivery_method: string;
+}): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.post<ApiResponse<any>>("/user/delivery/calculate-fee", data);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const completeDeliveryVerification = async (data: {
+  order_id: number;
+  delivery_photos: File[];
+  otp: string;
+  phone_confirmed: boolean;
+  verified_items: any[];
+}): Promise<ApiResponse<any>> => {
+  try {
+    const formData = new FormData();
+    formData.append("order_id", data.order_id.toString());
+    formData.append("otp", data.otp);
+    formData.append("phone_confirmed", data.phone_confirmed.toString());
+
+    // Append delivery photos
+    data.delivery_photos.forEach((photo, index) => {
+      formData.append(`delivery_photos[${index}]`, photo);
+    });
+
+    // Append verified items
+    formData.append("verified_items", JSON.stringify(data.verified_items));
+
+    const response = await api.post<ApiResponse<any>>(
+      `/user/delivery/complete-verification/${data.order_id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const getDeliveryVerificationStatus = async (orderId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.get<ApiResponse<any>>(`/user/delivery/verification-status/${orderId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+// Self-Pickup API Functions
+export const initiateSelfPickup = async (orderId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.post<ApiResponse<any>>("/user/self-pickup/initiate", {
+      order_id: orderId,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const completeSelfPickupVerification = async (data: {
+  order_id: number;
+  verified_items: any[];
+  discrepancies?: any[];
+}): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.post<ApiResponse<any>>(
+      "/user/self-pickup/complete-verification",
+      data
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};

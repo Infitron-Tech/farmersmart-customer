@@ -1,6 +1,8 @@
 import MyBreadcrumbs from "@/components/custom/MyBreadcrumbs";
 import RatingModal from "@/components/Modals/RatingModal";
 import ReturnOrderItemModal from "@/components/Modals/ReturnOrderItemModal";
+import SelfPickupVerificationModal from "@/components/Modals/SelfPickupVerificationModal";
+import DeliveryVerificationModal from "@/components/Modals/DeliveryVerificationModal";
 import { orderStatusColorMap } from "@/config/constants";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatString } from "@/helpers/validator";
@@ -82,6 +84,18 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
     isOpen: isReturnOpen,
     onOpen: onReturnOpen,
     onClose: onReturnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isSelfPickupVerifyOpen,
+    onOpen: onSelfPickupVerifyOpen,
+    onClose: onSelfPickupVerifyClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isFarmerVerifyOpen,
+    onOpen: onFarmerVerifyOpen,
+    onClose: onFarmerVerifyClose,
   } = useDisclosure();
 
   const handleProductReview = (item: OrderItem) => {
@@ -215,6 +229,8 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
               <DeliveryInfo
                 order={order}
                 onDeliveryRatingOpen={onDeliveryRatingOpen}
+                onSelfPickupVerifyOpen={onSelfPickupVerifyOpen}
+                onFarmerVerifyOpen={onFarmerVerifyOpen}
               />
             </div>
 
@@ -287,6 +303,37 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
           order={order}
           onItemCancelled={onCancelClose}
         />
+        {/* Self-Pickup Verification Modal */}
+        {order.fulfillment_type === "self_pickup" &&
+          (order.status === "ready_for_pickup" ||
+            order.status === "partially_accepted") && (
+            <SelfPickupVerificationModal
+              isOpen={isSelfPickupVerifyOpen}
+              onOpenChange={onSelfPickupVerifyClose}
+              orderId={order.id}
+              orderItems={order.items || []}
+              onSuccess={() => {
+                router.push("/my-account/orders").then(() => {
+                  router.push(`/my-account/orders/${order.slug}`);
+                });
+              }}
+            />
+          )}
+        {/* Farmer Delivery Verification Modal */}
+        {order.fulfillment_type === "farmer_delivery" &&
+          order.status === "out_for_delivery" && (
+            <DeliveryVerificationModal
+              isOpen={isFarmerVerifyOpen}
+              onOpenChange={onFarmerVerifyClose}
+              orderId={order.id}
+              orderItems={order.items || []}
+              onSuccess={() => {
+                router.push("/my-account/orders").then(() => {
+                  router.push(`/my-account/orders/${order.slug}`);
+                });
+              }}
+            />
+          )}
       </UserLayout>
     </>
   );
