@@ -1,6 +1,7 @@
 import { handleCheckout } from "@/helpers/functionalHelpers";
 import { getCartDataFromRedux } from "@/helpers/getters";
 import { setPromoCode } from "@/lib/redux/slices/checkoutSlice";
+import { store } from "@/lib/redux/store";
 import { paystackCreateOrder } from "@/routes/api";
 import { ApiResponse, PaystackCreateOrderResponse } from "@/types/ApiResponse";
 import { addToast, Button } from "@heroui/react";
@@ -175,6 +176,7 @@ const PayStack: FC<{
           const checkoutData: any = {
             reference: response.reference,
             transaction_id: response.reference,
+            fulfillment_type: store.getState().checkout.deliveryMethod || "delivery_boy",
           };
 
           if (usageType === "wallet" && transactionId) {

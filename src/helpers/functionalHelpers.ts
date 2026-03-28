@@ -343,7 +343,6 @@ export const handleCheckout = async (
     // Always use FormData
     const formData = new FormData();
     formData.append("payment_type", payment_type);
-    formData.append("fulfillment_type", fulfillment_type);
     formData.append("promo_code", promo_code);
     formData.append("gift_card", "");
     formData.append("gift_card_discount", "");
@@ -356,10 +355,15 @@ export const handleCheckout = async (
       `${window.location.origin}/my-account/orders`
     );
 
-    // Add extra params
+    // Add extra params (may override fulfillment_type from Redux)
     Object.entries(extra_params).forEach(([key, value]) => {
       formData.append(key, value as string);
     });
+
+    // Only append fulfillment_type from Redux if not provided in extra_params
+    if (!extra_params.hasOwnProperty("fulfillment_type")) {
+      formData.append("fulfillment_type", fulfillment_type);
+    }
 
     // Add attachments if any
     Object.entries(attachments).forEach(
