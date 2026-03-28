@@ -1149,6 +1149,7 @@ export const createOrder = async (
   params:
     | {
         payment_type?: string;
+        fulfillment_type?: string;
         promo_code?: string;
         promo_discount?: string;
         gift_card?: string;

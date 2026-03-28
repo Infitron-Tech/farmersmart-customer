@@ -330,6 +330,7 @@ export const handleCheckout = async (
     const use_wallet = state?.checkout?.useWallet || false;
     const rush_delivery = state?.checkout?.rushDelivery || false;
     const promo_code = state?.checkout?.promoCode || "";
+    const fulfillment_type = state?.checkout?.deliveryMethod || "delivery_boy";
 
     if (!address_id) {
       console.error(i18n.t("checkout.no_address"));
@@ -342,6 +343,7 @@ export const handleCheckout = async (
     // Always use FormData
     const formData = new FormData();
     formData.append("payment_type", payment_type);
+    formData.append("fulfillment_type", fulfillment_type);
     formData.append("promo_code", promo_code);
     formData.append("gift_card", "");
     formData.append("gift_card_discount", "");
