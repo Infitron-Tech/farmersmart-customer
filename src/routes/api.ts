@@ -1691,9 +1691,14 @@ export const getForumContributors = async (): Promise<ApiResponse<CommunityContr
 
 /* <-------------- Delivery API Functions ------------> */
 
-export const getAvailableDeliveryMethods = async (orderId: number): Promise<ApiResponse<any>> => {
+export const getAvailableDeliveryMethods = async (cartId: number, latitude?: number, longitude?: number): Promise<ApiResponse<any>> => {
   try {
-    const response = await api.get<ApiResponse<any>>(`/user/delivery/available-methods/${orderId}`);
+    const params = new URLSearchParams();
+    if (latitude !== undefined) params.append('latitude', latitude.toString());
+    if (longitude !== undefined) params.append('longitude', longitude.toString());
+
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const response = await api.get<ApiResponse<any>>(`/user/delivery/available-methods/${cartId}${queryString}`);
     return response.data;
   } catch (error: any) {
     console.error("API error:", error);

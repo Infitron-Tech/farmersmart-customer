@@ -47,7 +47,11 @@ const DeliveryMethodSelector: FC = () => {
     const fetchDeliveryMethods = async () => {
       setIsLoading(true);
       try {
-        const result = await getAvailableDeliveryMethods(cartData.id);
+        const result = await getAvailableDeliveryMethods(
+          cartData.id,
+          selectedAddress?.latitude,
+          selectedAddress?.longitude
+        );
 
         if (result.success && result.data?.methods) {
           const options: DeliveryOption[] = result.data.methods.map(
@@ -66,6 +70,8 @@ const DeliveryMethodSelector: FC = () => {
           if (!selectedMethod && options.length > 0) {
             setSelectedMethod(options[0].id);
           }
+        } else {
+          setDeliveryOptions([]);
         }
       } catch (error) {
         console.error("Error fetching delivery methods:", error);
