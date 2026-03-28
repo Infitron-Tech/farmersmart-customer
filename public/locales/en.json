@@ -361,6 +361,7 @@
     "selectAddressDescription": "Please select a delivery address to proceed",
     "selectMethod": "Select Delivery Method",
     "selectMethodDescription": "Choose how you want to receive your order",
+    "methodRequired": "Please select a delivery method to proceed",
     "free": "Free",
     "photoLimitError": {
       "title": "Photo Limit",
