@@ -77,23 +77,43 @@ const PayStack: FC<{
       return;
     }
 
-    const script = document.createElement("script");
-    script.id = "paystack-sdk";
-    script.src = "https://js.paystack.co/v2/inline.js";
-    script.async = true;
-    script.onload = () => setSdkReady(true);
-    script.onerror = () => console.error("PayStack SDK failed to load.");
-    document.body.appendChild(script);
+    // Ensure document.body exists
+    if (!document.body) {
+      return;
+    }
 
-    return () => {
-      const existing = document.getElementById("paystack-sdk");
-      if (existing) existing.remove();
-    };
+    try {
+      const script = document.createElement("script");
+      script.id = "paystack-sdk";
+      script.src = "https://js.paystack.co/v2/inline.js";
+      script.async = true;
+      script.onload = () => setSdkReady(true);
+      script.onerror = () => console.error("PayStack SDK failed to load.");
+      document.body.appendChild(script);
+
+      return () => {
+        const existing = document.getElementById("paystack-sdk");
+        if (existing?.parentNode) {
+          existing.parentNode.removeChild(existing);
+        }
+      };
+    } catch (error) {
+      console.error("Error loading PayStack SDK:", error);
+    }
   }, []);
 
   const handlePayment = React.useCallback(async () => {
-    if (!sdkReady || !window.PaystackPop) {
-      console.error("PayStack SDK not ready yet.");
+    if (!sdkReady || typeof window === "undefined" || !window.PaystackPop) {
+      console.error("PayStack SDK not ready yet.", {
+        sdkReady,
+        hasWindow: typeof window !== "undefined",
+        hasPaystackPop: typeof window !== "undefined" && !!window.PaystackPop,
+      });
+      addToast({
+        title: "Payment Gateway Loading",
+        description: "Please wait for the payment gateway to load.",
+        color: "warning",
+      });
       return;
     }
 
