@@ -173,11 +173,15 @@ const PayStack: FC<{
         setIsConfirming(true);
 
         try {
+          console.log("Processing PayStack payment response:", response);
+
           const checkoutData: any = {
             reference: response.reference,
             transaction_id: response.reference,
             fulfillment_type: store.getState().checkout.deliveryMethod || "delivery_boy",
           };
+
+          console.log("Checkout data being sent:", checkoutData);
 
           if (usageType === "wallet" && transactionId) {
             checkoutData.wallet_transaction_id = transactionId;
@@ -187,6 +191,8 @@ const PayStack: FC<{
             usageType === "wallet" && transactionId
               ? { success: true, message: "Wallet Recharge Done!" }
               : await handleCheckout("paystackPayment", checkoutData);
+
+          console.log("Checkout response:", res);
 
           if (res?.success) {
             onSuccess();
@@ -229,25 +235,52 @@ const PayStack: FC<{
         }
       };
 
-      const popup = new window.PaystackPop();
+      // Validate payment response before opening popup
+      if (!orderData.payment_response?.access_code) {
+        console.error("Invalid payment response:", orderData.payment_response);
+        addToast({
+          title: "Payment Error",
+          description: "Invalid payment reference. Please try again.",
+          color: "danger",
+        });
+        setIsLoading(false);
+        onError();
+        return;
+      }
 
-      popup.resumeTransaction(orderData.payment_response.access_code, {
-        onSuccess: (response: PayStackResponse) => {
-          // ✅ Payment successful, process it
-          processPayment(response);
-        },
-        onCancel: () => {
-          // ✅ User closed the popup
-          addToast({
-            title: "Payment Cancelled",
-            description: "You have closed the PayStack checkout.",
-            color: "warning",
-          });
-          setIsConfirming(false);
-          setIsLoading(false);
-          onError();
-        },
-      });
+      try {
+        const popup = new window.PaystackPop();
+
+        popup.resumeTransaction(orderData.payment_response.access_code, {
+          onSuccess: (response: PayStackResponse) => {
+            // ✅ Payment successful, process it
+            console.log("PayStack payment successful, reference:", response.reference);
+            processPayment(response);
+          },
+          onCancel: () => {
+            // ✅ User closed the popup
+            console.log("PayStack payment cancelled by user");
+            addToast({
+              title: "Payment Cancelled",
+              description: "You have closed the PayStack checkout.",
+              color: "warning",
+            });
+            setIsConfirming(false);
+            setIsLoading(false);
+            onError();
+          },
+        });
+      } catch (paystackError) {
+        console.error("PayStack SDK error:", paystackError);
+        addToast({
+          title: "Payment Gateway Error",
+          description:
+            "An error occurred with the payment gateway. Please try again.",
+          color: "danger",
+        });
+        setIsLoading(false);
+        onError();
+      }
 
       setIsLoading(false);
     } catch (err) {

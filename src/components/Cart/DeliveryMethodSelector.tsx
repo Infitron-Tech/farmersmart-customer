@@ -11,6 +11,7 @@ import { updateCartData } from "@/helpers/updators";
 
 interface DeliveryOption {
   id: string;
+  code: string;
   name: string;
   description: string;
   fee: number;
@@ -57,10 +58,11 @@ const DeliveryMethodSelector: FC = () => {
           const options: DeliveryOption[] = result.data.methods.map(
             (method: any) => ({
               id: method.id || method.key,
+              code: method.code || method.id,
               name: method.name,
               description: method.description,
               fee: method.fee || 0,
-              icon: getIconForMethod(method.id || method.key),
+              icon: getIconForMethod(method.code || method.id),
               badge: method.badge,
             })
           );
@@ -102,15 +104,18 @@ const DeliveryMethodSelector: FC = () => {
   };
 
   const handleMethodChange = async (methodId: string) => {
+    const selectedOption = deliveryOptions.find((opt) => opt.id === methodId);
+    const methodCode = selectedOption?.code || methodId;
+
     setSelectedMethod(methodId);
-    dispatch(setDeliveryMethod(methodId));
+    dispatch(setDeliveryMethod(methodCode));
 
     // Calculate fee for selected method
     if (cartData?.id) {
       try {
         const result = await calculateDeliveryFee({
           order_id: cartData.id,
-          delivery_method: methodId,
+          delivery_method: methodCode,
         });
 
         if (result.success && result.data?.fee !== undefined) {
