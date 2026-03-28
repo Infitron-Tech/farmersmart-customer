@@ -911,6 +911,7 @@ export const getCart = async (
     use_wallet?: boolean;
     latitude?: number | string;
     longitude?: number | string;
+    fulfillment_type?: string;
   } = {},
 ): Promise<ApiResponse<CartResponse>> => {
   try {
@@ -1166,14 +1167,9 @@ export const createOrder = async (
     | FormData = {},
 ): Promise<ApiResponse<OrderCheckoutResponse>> => {
   try {
-    const isFormData = params instanceof FormData;
-    const response = await api.post("/user/orders", params, {
-      headers: isFormData
-        ? {
-            "Content-Type": "multipart/form-data",
-          }
-        : undefined,
-    });
+    // When sending FormData, axios will automatically set Content-Type
+    // with the correct boundary parameter. Don't manually override it.
+    const response = await api.post("/user/orders", params);
     return response.data;
   } catch (error) {
     console.error("API error:", error);
