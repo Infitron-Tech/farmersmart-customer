@@ -367,7 +367,7 @@ export const resetCheckOutState = () => {
 
 export const handleCheckout = async (
   payment_type: string = "cod",
-  extra_params: object
+  extra_params: any = {}
 ) => {
   try {
     console.log("═══════════════════════════════════════════════════════════");
@@ -392,8 +392,8 @@ export const handleCheckout = async (
       promo_code,
       fulfillment_type,
       payment_type,
-      transaction_id: extra_params.transaction_id,
-      reference: extra_params.reference,
+      transaction_id: extra_params?.transaction_id,
+      reference: extra_params?.reference,
       extra_params,
     });
 
@@ -462,7 +462,7 @@ export const handleCheckout = async (
       console.log("✅ ORDER CREATED SUCCESSFULLY:");
       console.log({
         order_id: data?.id,
-        order_num: data?.order_num,
+        invoice: data?.invoice,
         status: data?.status,
         payment_status: data?.payment_status,
         fulfillment_type: data?.fulfillment_type,

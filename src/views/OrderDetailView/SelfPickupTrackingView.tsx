@@ -49,7 +49,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
     const statusOrder = ["awaiting_store_response", "accepted", "preparing", "ready_for_pickup", "collected", "picked_up", "delivered"];
     if (!order.items || order.items.length === 0) return "pending";
 
-    const itemStatuses = order.items.map((item: OrderItem) => item.status);
+    const itemStatuses = order.items.map((item: OrderItem) => (item.status as string).toLowerCase());
     for (const status of statusOrder.reverse()) {
       if (itemStatuses.includes(status)) return status;
     }
