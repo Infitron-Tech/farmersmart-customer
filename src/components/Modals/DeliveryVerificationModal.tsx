@@ -439,13 +439,13 @@ const DeliveryVerificationModal: FC<DeliveryVerificationModalProps> = ({
                         className="w-32"
                         size="sm"
                       >
-                        <SelectItem key="good" value="good">
+                        <SelectItem key="good">
                           {t("delivery.condition.good") || "Good"}
                         </SelectItem>
-                        <SelectItem key="damaged" value="damaged">
+                        <SelectItem key="damaged">
                           {t("delivery.condition.damaged") || "Damaged"}
                         </SelectItem>
-                        <SelectItem key="missing" value="missing">
+                        <SelectItem key="missing">
                           {t("delivery.condition.missing") || "Missing"}
                         </SelectItem>
                       </Select>
