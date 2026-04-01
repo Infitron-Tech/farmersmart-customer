@@ -70,7 +70,26 @@ const DeliveryMethodSelector: FC = () => {
 
           // Set first option as default if none selected
           if (!selectedMethod && options.length > 0) {
-            setSelectedMethod(options[0].id);
+            const defaultOption = options[0];
+            setSelectedMethod(defaultOption.id);
+
+            // Dispatch to Redux so checkout uses correct method
+            dispatch(setDeliveryMethod(defaultOption.code));
+
+            // Calculate fee for default method
+            if (cartData?.id) {
+              try {
+                const feeResult = await calculateDeliveryFee({
+                  order_id: cartData.id,
+                  delivery_method: defaultOption.code,
+                });
+                if (feeResult.success && feeResult.data?.fee !== undefined) {
+                  dispatch(setDeliveryFee(feeResult.data.fee));
+                }
+              } catch (error) {
+                console.error("Error calculating default delivery fee:", error);
+              }
+            }
           }
         } else {
           setDeliveryOptions([]);
