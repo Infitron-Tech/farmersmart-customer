@@ -200,7 +200,7 @@ const DeliveryInfo: FC<DeliveryInfoProps> = ({
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-gray-600 dark:text-gray-300" />
               <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                {t("delivery.farmer") || "Farmer/Seller"}
+                {t("delivery.farmerLabel") || "Farmer/Seller"}
               </h3>
             </div>
             {isFarmerOutForDelivery && onFarmerVerifyOpen && (

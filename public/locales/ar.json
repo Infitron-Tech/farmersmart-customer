@@ -340,7 +340,9 @@
     "condition": {
       "good": "جيد",
       "damaged": "تالف",
-      "missing": "مفقود"
+      "missing": "مفقود",
+      "label": "الحالة",
+      "select": "اختر الحالة"
     },
     "discrepancy": {
       "missing": "عناصر مفقودة",
@@ -349,6 +351,16 @@
       "wrongItem": "عنصر خاطئ"
     },
     "verification": {
+      "title": "إكمال التحقق من التوصيل",
+      "step1": {
+        "description": "يرجى تحميل صور العناصر المسلمة (مطلوب 1-5 صور)"
+      },
+      "step2": {
+        "description": "أدخل رمز OTP المكون من 6 أرقام المرسل إلى هاتفك"
+      },
+      "step3": {
+        "description": "تأكيد رقم الهاتف والتحقق من العناصر المسلمة"
+      },
       "success": {
         "title": "نجاح",
         "description": "اكتمل التحقق من التوصيل بنجاح"
@@ -356,7 +368,17 @@
       "failed": {
         "title": "فشل التحقق",
         "description": "فشل إكمال التحقق"
-      }
+      },
+      "otpSent": {
+        "title": "تم إرسال OTP",
+        "description": "تم إرسال رمز OTP إلى هاتفك"
+      },
+      "otpError": {
+        "title": "خطأ",
+        "description": "فشل إرسال OTP"
+      },
+      "sendingOtp": "جاري إرسال OTP إلى هاتفك...",
+      "submit": "إكمال التحقق"
     },
     "verifyAllItems": "يرجى التحقق من جميع العناصر قبل الإرسال",
     "verifyItems": "التحقق من العناصر",
@@ -369,7 +391,6 @@
     "itemsVerified": "العناصر المحققة",
     "discrepanciesFound": "تم العثور على تناقضات",
     "completeVerification": "إكمال التحقق",
-    "farmer": "مزارع / بائع",
     "expectedDelivery": "التوصيل المتوقع",
     "calculatingTime": "جاري الحساب...",
     "farmerOnTheWay": "المزارع في طريقه لتوصيل طلبك",
@@ -387,6 +408,7 @@
     "free": "مجاني",
     "contactFarmer": "اتصل بالمزارع",
     "storeOperator": "مشغل المتجر",
+    "farmerLabel": "مزارع / بائع",
     "farmerInstructions": "معلومات توصيل المزارع",
     "farmerInfo1": "سيقوم المزارع بتوصيل طلبك مباشرة إلى موقعك",
     "farmerInfo2": "يمكنك الاتصال بالمزارع مباشرة للحصول على تحديثات التوصيل",

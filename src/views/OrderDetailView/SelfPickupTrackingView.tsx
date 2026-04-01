@@ -41,6 +41,9 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Normalize status to lowercase for comparison
+  const normalizedStatus = order.status?.toLowerCase() || "";
+
   // Get the furthest status any item has reached
   const getHighestItemStatus = (): string => {
     const statusOrder = ["awaiting_store_response", "accepted", "preparing", "ready_for_pickup", "collected", "picked_up", "delivered"];
@@ -139,9 +142,9 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
 
   // Determine which action button to show
   // Show "Initiate Pickup" when order is ready for pickup
-  const shouldShowInitiate = order.status === "ready_for_pickup" || order.status === "collected";
+  const shouldShowInitiate = normalizedStatus === "ready_for_pickup" || normalizedStatus === "collected";
   // Show "Verify Items" when order has been picked up
-  const shouldShowVerify = order.status === "picked_up";
+  const shouldShowVerify = normalizedStatus === "picked_up";
 
   return (
     <div className="space-y-6">
@@ -199,7 +202,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
               </Button>
             )}
 
-            {order.status === "delivered" && (
+            {normalizedStatus === "delivered" && (
               <div className="flex items-center gap-2 text-green-600 px-3 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <CheckCircle className="w-5 h-5" />
                 <span className="text-sm font-medium">
@@ -328,7 +331,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
         </CardHeader>
         <CardBody className="pt-0">
           <ol className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-            {order.status === "collected" && (
+            {normalizedStatus === "collected" && (
               <>
                 <li className="flex gap-2">
                   <span className="font-medium text-gray-900 dark:text-gray-100 flex-shrink-0">
@@ -369,7 +372,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
               </>
             )}
 
-            {order.status === "picked_up" && (
+            {normalizedStatus === "picked_up" && (
               <li className="flex gap-2 text-green-600 dark:text-green-400">
                 <CheckCircle className="w-5 h-5 flex-shrink-0" />
                 <span>
@@ -379,7 +382,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
               </li>
             )}
 
-            {order.status === "delivered" && (
+            {normalizedStatus === "delivered" && (
               <li className="flex gap-2 text-green-600 dark:text-green-400">
                 <CheckCircle className="w-5 h-5 flex-shrink-0" />
                 <span>

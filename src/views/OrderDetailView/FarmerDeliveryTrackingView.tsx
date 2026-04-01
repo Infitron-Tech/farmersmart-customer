@@ -41,6 +41,9 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Normalize status to lowercase for comparison
+  const normalizedStatus = order.status?.toLowerCase() || "";
+
   // Build timeline based on order status
   const getTimeline = (): StatusTimeline[] => {
     const timeline: StatusTimeline[] = [
@@ -51,12 +54,14 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "pending",
           "awaiting_store_response",
           "accepted",
+          "partially_preparing",
           "preparing",
           "collected",
           "picked_up",
           "out_for_delivery",
           "delivered",
-        ].includes(order.status),
+          "accepted_by_seller",
+        ].includes(normalizedStatus),
         icon: <Clock className="w-5 h-5" />,
       },
       {
@@ -68,7 +73,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "picked_up",
           "out_for_delivery",
           "delivered",
-        ].includes(order.status),
+        ].includes(normalizedStatus),
         icon: <Store className="w-5 h-5" />,
       },
       {
@@ -80,35 +85,35 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "picked_up",
           "out_for_delivery",
           "delivered",
-        ].includes(order.status),
+        ].includes(normalizedStatus),
         icon: <MapPin className="w-5 h-5" />,
       },
       {
         status: "picked_up",
         label: t("delivery.farmer.inTransit") || "In Transit",
         timestamp: ["picked_up", "out_for_delivery", "delivered"].includes(
-          order.status
+          normalizedStatus
         )
           ? order.updated_at
           : undefined,
-        completed: ["out_for_delivery", "delivered"].includes(order.status),
+        completed: ["out_for_delivery", "delivered"].includes(normalizedStatus),
         icon: <Truck className="w-5 h-5" />,
       },
       {
         status: "out_for_delivery",
         label: t("delivery.farmer.arrivingSoon") || "Arriving Soon",
-        timestamp: ["out_for_delivery", "delivered"].includes(order.status)
+        timestamp: ["out_for_delivery", "delivered"].includes(normalizedStatus)
           ? order.updated_at
           : undefined,
-        completed: order.status === "delivered",
+        completed: normalizedStatus === "delivered",
         icon: <Navigation className="w-5 h-5" />,
       },
       {
         status: "delivered",
         label: t("delivery.farmer.delivered") || "Delivered",
         timestamp:
-          order.status === "delivered" ? order.updated_at : undefined,
-        completed: order.status === "delivered",
+          normalizedStatus === "delivered" ? order.updated_at : undefined,
+        completed: normalizedStatus === "delivered",
         icon: <CheckCircle className="w-5 h-5" />,
       },
     ];
@@ -120,7 +125,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
 
   // Current status label
   const getStatusLabel = (): string => {
-    switch (order.status) {
+    switch (normalizedStatus) {
       case "collected":
         return t("delivery.farmer.readyDelivery") || "Ready for Delivery";
       case "picked_up":
@@ -136,7 +141,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
 
   // Status color
   const getStatusColor = () => {
-    switch (order.status) {
+    switch (normalizedStatus) {
       case "collected":
         return "warning";
       case "picked_up":
@@ -171,16 +176,16 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
                 </Chip>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {order.status === "collected" &&
+                {normalizedStatus === "collected" &&
                   (t("delivery.farmer.descCollected") ||
                     "Your order is prepared and ready for delivery")}
-                {order.status === "picked_up" &&
+                {normalizedStatus === "picked_up" &&
                   (t("delivery.farmer.descInTransit") ||
                     "Your order is on the way to your location")}
-                {order.status === "out_for_delivery" &&
+                {normalizedStatus === "out_for_delivery" &&
                   (t("delivery.farmer.descArrivingSoon") ||
                     "Your order will arrive shortly")}
-                {order.status === "delivered" &&
+                {normalizedStatus === "delivered" &&
                   (t("delivery.farmer.descDelivered") ||
                     "Your order has been delivered and verified")}
                 {![
@@ -188,7 +193,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
                   "picked_up",
                   "out_for_delivery",
                   "delivered",
-                ].includes(order.status) &&
+                ].includes(normalizedStatus) &&
                   (t("delivery.farmer.descProcessing") ||
                     "Your order is being prepared for delivery")}
               </p>
@@ -200,7 +205,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
             </div>
 
             {/* Verify Button */}
-            {order.status === "out_for_delivery" &&
+            {normalizedStatus === "out_for_delivery" &&
               onFarmerVerifyOpen && (
                 <Button
                   color="primary"
@@ -213,7 +218,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
                 </Button>
               )}
 
-            {order.status === "delivered" && (
+            {normalizedStatus === "delivered" && (
               <div className="flex items-center gap-2 text-green-600 px-3 py-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <CheckCircle className="w-5 h-5" />
                 <span className="text-sm font-medium">
@@ -232,7 +237,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
             <CardHeader className="pb-2 flex items-center gap-2">
               <Leaf className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                {t("delivery.farmer") || "Farmer/Seller"}
+                {t("delivery.farmerLabel") || "Farmer/Seller"}
               </h3>
             </CardHeader>
             <CardBody className="pt-0">
@@ -250,7 +255,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
                       {order.delivery_partner_name}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {t("delivery.farmer")} • {t("storeOperator")}
+                      {t("delivery.farmerLabel")} • {t("storeOperator")}
                     </p>
                   </div>
 
@@ -288,8 +293,8 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
         )}
 
       {/* Estimated Delivery Time Card */}
-      {(order.status === "picked_up" ||
-        order.status === "out_for_delivery") && (
+      {(normalizedStatus === "picked_up" ||
+        normalizedStatus === "out_for_delivery") && (
         <Card shadow="sm" radius="sm" className="border-l-4 border-l-orange-500">
           <CardHeader className="pb-2">
             <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />

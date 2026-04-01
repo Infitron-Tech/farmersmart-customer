@@ -343,10 +343,17 @@
     "farmerInfo3": "Verify items when delivered and confirm receipt",
     "farmerInfo4": "Keep your phone available for delivery confirmation",
     "estimatedDeliveryTime": "Estimated Delivery Time",
+    "phoneRequired": "Phone verification required",
+    "phoneNumber": "Phone Number",
+    "phonePlaceholder": "706 8839674 or 0706 8839674",
+    "phoneNumberHelp": "Enter 10 digits (with or without leading 0). Country code will be added automatically.",
+    "phoneHelp": "We'll send you an OTP to verify your phone number",
     "condition": {
       "good": "Good",
       "damaged": "Damaged",
-      "missing": "Missing"
+      "missing": "Missing",
+      "label": "Condition",
+      "select": "Select condition"
     },
     "discrepancy": {
       "missing": "Missing Items",
@@ -355,6 +362,16 @@
       "wrongItem": "Wrong Item"
     },
     "verification": {
+      "title": "Complete Delivery Verification",
+      "step1": {
+        "description": "Please upload photos of the delivered items (1-5 photos required)"
+      },
+      "step2": {
+        "description": "Enter the 6-digit OTP sent to your phone"
+      },
+      "step3": {
+        "description": "Confirm phone number and verify delivered items"
+      },
       "success": {
         "title": "Success",
         "description": "Delivery verification completed successfully"
@@ -362,7 +379,23 @@
       "failed": {
         "title": "Verification Failed",
         "description": "Failed to complete verification"
-      }
+      },
+      "otpSent": {
+        "title": "OTP Sent",
+        "description": "An OTP has been sent to your phone"
+      },
+      "otpError": {
+        "title": "Error",
+        "description": "Failed to send OTP"
+      },
+      "phoneVerified": {
+        "title": "Phone Verified",
+        "description": "Your phone has been verified"
+      },
+      "phoneVerifiedDesc": "Your phone has been verified",
+      "phoneHelp": "We'll send you an OTP to verify your phone number",
+      "sendingOtp": "Sending OTP to your phone...",
+      "submit": "Complete Verification"
     },
     "verifyAllItems": "Please verify all items before submitting",
     "verifyItems": "Verify Items",
@@ -375,7 +408,6 @@
     "itemsVerified": "Items Verified",
     "discrepanciesFound": "Discrepancies Found",
     "completeVerification": "Complete Verification",
-    "farmer": "Farmer/Seller",
     "expectedDelivery": "Expected Delivery",
     "calculatingTime": "Calculating...",
     "farmerOnTheWay": "Farmer is on the way to deliver your order",
@@ -393,6 +425,7 @@
     "free": "Free",
     "contactFarmer": "Contact Farmer",
     "storeOperator": "Store Operator",
+    "farmerLabel": "Farmer/Seller",
     "photoLimitError": {
       "title": "Photo Limit",
       "description": "You can upload a maximum of 5 photos"
@@ -1924,6 +1957,10 @@
     "cancel": "Cancel",
     "next": "Next",
     "processing": "Processing...",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "sendOtp": "Send OTP",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "loading": "Loading..."
   }
 }
