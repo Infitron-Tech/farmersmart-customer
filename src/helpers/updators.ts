@@ -22,12 +22,17 @@ export const updateCartData = async (
   emtyCartToast: boolean = true
 ): Promise<ApiResponse<CartResponse> | undefined> => {
   try {
+    console.log("═══════════════════════════════════════════════════════════");
+    console.log("🛒 CART UPDATE STARTED");
+    console.log("═══════════════════════════════════════════════════════════");
+
     const isLoggedIn = store.getState().auth.isLoggedIn;
     const address_id = store
       .getState()
       .checkout.selectedAddress?.id?.toString();
 
     if (!isLoggedIn) {
+      console.log("⚠️ User not logged in, skipping cart update");
       return;
     }
 
@@ -41,6 +46,21 @@ export const updateCartData = async (
       ? state?.checkout?.rushDelivery || false
       : false;
     const promo_code = state?.checkout?.promoCode || "";
+    const fulfillment_type = state?.checkout?.deliveryMethod || "delivery_boy";
+
+    console.log("📊 CART UPDATE PARAMETERS:");
+    console.log({
+      address_id: customAddress ? customAddress : passAddress ? address_id : "",
+      use_wallet,
+      rush_delivery,
+      promo_code,
+      latitude: lat,
+      longitude: lng,
+      fulfillment_type,
+      passAddress,
+      customAddress,
+    });
+
     const cartRes: ApiResponse<CartResponse> = await getCart({
       address_id: customAddress ? customAddress : passAddress ? address_id : "",
       use_wallet,
@@ -48,16 +68,33 @@ export const updateCartData = async (
       promo_code,
       latitude: lat,
       longitude: lng,
+      fulfillment_type,
+    });
+
+    console.log("📨 CART API RESPONSE RECEIVED:");
+    console.log({
+      success: cartRes.success,
+      message: cartRes.message,
+      itemsCount: cartRes.data?.items_count || 0,
+      totalQuantity: cartRes.data?.total_quantity || 0,
+      itemsTotal: cartRes.data?.payment_summary?.items_total || 0,
+      deliveryCharges: cartRes.data?.payment_summary?.delivery_charges || 0,
+      payableAmount: cartRes.data?.payment_summary?.payable_amount || 0,
+      isRushDeliveryAvailable:
+        cartRes.data?.payment_summary?.is_rush_delivery_available || false,
     });
 
     const rushCheck = customAddress || address_id;
 
     if (cartRes.success && cartRes.data) {
+      console.log("✅ CART UPDATED SUCCESSFULLY");
       store.dispatch(setCartData(cartRes.data));
       if (cartRes?.data?.removed_count && cartRes.data.removed_count > 0) {
+        console.log("⚠️ Some items were removed from cart");
         document.getElementById("removed-items-modal-open")?.click();
       }
       if (cartRes?.data?.payment_summary?.is_rush_delivery_available) {
+        console.log("✨ Rush delivery is available");
         document.getElementById("rush-delivery-available")?.click();
       }
       if (
@@ -65,6 +102,7 @@ export const updateCartData = async (
         rush_delivery &&
         rushCheck
       ) {
+        console.log("❌ Rush delivery not available, disabling");
         if (customAddress) {
           document.getElementById("rush-delivery-off")?.click();
         }
@@ -77,6 +115,7 @@ export const updateCartData = async (
         }
       }
     } else if (!cartRes.success && cartRes.message == "Your cart is empty") {
+      console.log("📭 CART IS EMPTY");
       store.dispatch(clearCart());
       resetCheckOutState();
       if (renderToast && emtyCartToast) {
@@ -87,6 +126,7 @@ export const updateCartData = async (
         });
       }
     } else {
+      console.error("❌ CART FETCH FAILED:", cartRes.message);
       store.dispatch(setError("Failed to fetch updated cart"));
       if (renderToast) {
         addToast({
@@ -98,7 +138,7 @@ export const updateCartData = async (
     }
     return cartRes;
   } catch (error) {
-    console.error(error);
+    console.error("🔥 CART UPDATE ERROR:", error);
   } finally {
     store.dispatch(setCartLoading(false));
   }

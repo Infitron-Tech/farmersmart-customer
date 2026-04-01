@@ -337,6 +337,12 @@
       "descArrivingSoon": "Your order will arrive shortly",
       "descDelivered": "Your order has been delivered and verified"
     },
+    "farmerInstructions": "Farmer Delivery Info",
+    "farmerInfo1": "The farmer will deliver your order directly to your location",
+    "farmerInfo2": "You can contact the farmer directly for delivery updates",
+    "farmerInfo3": "Verify items when delivered and confirm receipt",
+    "farmerInfo4": "Keep your phone available for delivery confirmation",
+    "estimatedDeliveryTime": "Estimated Delivery Time",
     "condition": {
       "good": "Good",
       "damaged": "Damaged",
@@ -1915,6 +1921,9 @@
   "please_select_variant": "Please select a variant",
   "preview": "Preview",
   "common": {
-    "processing": "Processing..."
+    "cancel": "Cancel",
+    "next": "Next",
+    "processing": "Processing...",
+    "submitting": "Submitting..."
   }
 }

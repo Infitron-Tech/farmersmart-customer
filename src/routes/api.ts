@@ -1737,26 +1737,52 @@ export const calculateDeliveryFee = async (data: {
   }
 };
 
+export const initiateDeliveryVerification = async (orderId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.post<ApiResponse<any>>("/user/delivery/initiate-verification", {
+      order_id: orderId,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
 export const completeDeliveryVerification = async (data: {
   order_id: number;
   delivery_photos: File[];
   otp: string;
-  phone_confirmed: boolean;
   verified_items: any[];
 }): Promise<ApiResponse<any>> => {
   try {
     const formData = new FormData();
     formData.append("order_id", data.order_id.toString());
     formData.append("otp", data.otp);
-    formData.append("phone_confirmed", data.phone_confirmed.toString());
 
-    // Append delivery photos
-    data.delivery_photos.forEach((photo, index) => {
+    // Convert delivery photos to base64 strings
+    const photoPromises = data.delivery_photos.map(
+      (photo) =>
+        new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.readAsDataURL(photo);
+        })
+    );
+
+    const base64Photos = await Promise.all(photoPromises);
+    base64Photos.forEach((photo, index) => {
       formData.append(`delivery_photos[${index}]`, photo);
     });
 
-    // Append verified items
-    formData.append("verified_items", JSON.stringify(data.verified_items));
+    // Append verified items as array structure
+    data.verified_items.forEach((item, index) => {
+      formData.append(`verified_items[${index}][item_id]`, item.item_id.toString());
+      formData.append(`verified_items[${index}][condition]`, item.condition);
+    });
 
     const response = await api.post<ApiResponse<any>>(
       `/user/delivery/complete-verification/${data.order_id}`,

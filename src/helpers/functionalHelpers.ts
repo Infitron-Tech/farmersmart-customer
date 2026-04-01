@@ -131,9 +131,21 @@ export const handleAddToCart = async (params: {
   const { onClose = () => {}, renderToast = true } = params;
 
   try {
+    console.log("═══════════════════════════════════════════════════════════");
+    console.log("🛍️ ADD TO CART INITIATED");
+    console.log("═══════════════════════════════════════════════════════════");
+
+    console.log("📦 PRODUCT BEING ADDED:");
+    console.log({
+      product_variant_id: params.product_variant_id,
+      store_id: params.store_id,
+      quantity: params.quantity,
+    });
+
     const isLoggedIn = store.getState().auth.isLoggedIn;
 
     if (!isLoggedIn) {
+      console.log("⚠️ User not logged in, redirecting to login");
       onClose();
       const btn = document.getElementById("login-btn");
       btn?.click();
@@ -151,9 +163,20 @@ export const handleAddToCart = async (params: {
 
     store.dispatch(setCartLoading(true));
 
+    console.log("⏳ Calling API: POST /addToCart");
     const addRes: ApiResponse<CartResponse> = await addToCart(params);
 
+    console.log("📨 ADD TO CART API RESPONSE:");
+    console.log({
+      success: addRes.success,
+      message: addRes.message,
+      cartId: addRes.data?.id,
+      itemsCount: addRes.data?.items_count,
+      totalQuantity: addRes.data?.total_quantity,
+    });
+
     if (addRes.success) {
+      console.log("✅ ITEM ADDED TO CART SUCCESSFULLY");
       onClose();
       if (renderToast) {
         addToast({
@@ -170,14 +193,17 @@ export const handleAddToCart = async (params: {
         passAddress = true;
       }
 
+      console.log("📊 Updating full cart data...");
       const cartRes = await updateCartData(passAddress, true, 0, false);
 
       if (cartRes?.success && cartRes.data) {
+        console.log("✨ Cart data updated, storing in Redux");
         store.dispatch(setCartData(cartRes.data));
         if (window.location.pathname.startsWith("/cart")) {
           document.getElementById("refetch-similar-products")?.click();
         }
       } else {
+        console.error("❌ Failed to fetch updated cart data");
         store.dispatch(setError(i18n.t("cart.fetch_failed")));
 
         if (renderToast) {
@@ -189,6 +215,7 @@ export const handleAddToCart = async (params: {
         }
       }
     } else {
+      console.error("❌ FAILED TO ADD ITEM TO CART:", addRes.message);
       store.dispatch(setError(addRes.message || i18n.t("cart.add_failed")));
       if (renderToast) {
         addToast({
@@ -201,7 +228,7 @@ export const handleAddToCart = async (params: {
 
     return addRes;
   } catch (error) {
-    console.error("handleAddToCart error", error);
+    console.error("🔥 ADD TO CART ERROR:", error);
     store.dispatch(setError(i18n.t("cart.error_message")));
     if (renderToast) {
       addToast({
@@ -248,6 +275,7 @@ export const handleAddToCart = async (params: {
       },
     };
   } finally {
+    console.log("🏁 ADD TO CART OPERATION COMPLETED");
     store.dispatch(setCartLoading(false));
   }
 };
@@ -260,6 +288,11 @@ export const handleOfflineAddToCart = (params: {
   renderToast?: boolean;
 }) => {
   const { product, variant, quantity, onClose, renderToast = true } = params;
+
+  console.log("═══════════════════════════════════════════════════════════");
+  console.log("🛍️ ADD TO OFFLINE CART (NOT LOGGED IN)");
+  console.log("═══════════════════════════════════════════════════════════");
+
   const minQuantity = product.minimum_order_quantity || 1;
   const stepSize = product.quantity_step_size || 1;
   const maxAllowed = product.total_allowed_quantity || 1;
@@ -271,6 +304,17 @@ export const handleOfflineAddToCart = (params: {
       ? Number(variant.special_price)
       : Number(variant.price);
   const itemId = `${variant.id}`;
+
+  console.log("📦 OFFLINE CART ITEM:");
+  console.log({
+    product_id: product.id,
+    variant_id: variant.id,
+    store_id: variant.store_id,
+    product_name: product.title,
+    quantity: quantity,
+    price: finalPrice,
+    stock: stock,
+  });
 
   store.dispatch(
     addOfflineCartItem({
@@ -290,6 +334,8 @@ export const handleOfflineAddToCart = (params: {
       store_id: variant.store_id,
     })
   );
+
+  console.log("✅ ITEM ADDED TO OFFLINE CART");
 
   if (renderToast) {
     addToast({
@@ -324,6 +370,10 @@ export const handleCheckout = async (
   extra_params: object
 ) => {
   try {
+    console.log("═══════════════════════════════════════════════════════════");
+    console.log("🛒 CHECKOUT STARTED");
+    console.log("═══════════════════════════════════════════════════════════");
+
     const state = store.getState();
     const address_id = state?.checkout?.selectedAddress?.id || "";
     const order_note = state?.checkout?.orderNote || "";
@@ -332,7 +382,23 @@ export const handleCheckout = async (
     const promo_code = state?.checkout?.promoCode || "";
     const fulfillment_type = state?.checkout?.deliveryMethod || "delivery_boy";
 
+    // LOG 1: Checkout data from Redux
+    console.log("📊 CHECKOUT DATA FROM REDUX:");
+    console.log({
+      address_id,
+      order_note,
+      use_wallet,
+      rush_delivery,
+      promo_code,
+      fulfillment_type,
+      payment_type,
+      transaction_id: extra_params.transaction_id,
+      reference: extra_params.reference,
+      extra_params,
+    });
+
     if (!address_id) {
+      console.error("❌ NO ADDRESS SELECTED");
       console.error(i18n.t("checkout.no_address"));
       return fallbackApiRes;
     }
@@ -374,10 +440,34 @@ export const handleCheckout = async (
       }
     );
 
+    // LOG 2: FormData being sent to API
+    console.log("📤 FORM DATA BEING SENT TO API /orders:");
+    const formDataObject: any = {};
+    formData.forEach((value, key) => {
+      formDataObject[key] = value;
+    });
+    console.log(formDataObject);
+
+    console.log("⏳ Calling API: POST /api/orders");
     const response = await createOrder(formData);
+
+    // LOG 3: API Response
+    console.log("📨 API RESPONSE RECEIVED:");
+    console.log(response);
 
     if (response.success) {
       const { data } = response;
+
+      // LOG 4: Order Created Successfully
+      console.log("✅ ORDER CREATED SUCCESSFULLY:");
+      console.log({
+        order_id: data?.id,
+        order_num: data?.order_num,
+        status: data?.status,
+        payment_status: data?.payment_status,
+        fulfillment_type: data?.fulfillment_type,
+        total: data?.final_total,
+      });
 
       if (data) {
         trackPurchase(
@@ -393,12 +483,14 @@ export const handleCheckout = async (
       const paymentLink = response?.data?.payment_response?.link || "";
 
       if (payment_type === "flutterwavePayment") {
+        console.log("💳 REDIRECTING TO FLUTTERWAVE");
         if (isValidUrl(paymentLink)) {
           resetCheckOutState();
           window.location.href = paymentLink;
 
           return { success: true, data: null, message: "Redirected" };
         } else {
+          console.error("❌ Invalid Flutterwave payment link:", paymentLink);
           addToast({
             title: i18n.t("checkout.flutterwave_link_invalid"),
             description:
@@ -411,6 +503,7 @@ export const handleCheckout = async (
         }
       }
 
+      console.log("✨ CHECKOUT SUCCESSFUL - Showing confirmation");
       addToast({
         title: i18n.t("checkout.success"),
         size: "lg",
@@ -426,7 +519,12 @@ export const handleCheckout = async (
     }
     return response;
   } catch (error) {
-    console.error("Checkout error:", error);
+    console.error("🔥 CHECKOUT ERROR:", error);
+    addToast({
+      title: "Checkout Error",
+      description: "An error occurred during checkout. Please try again.",
+      color: "danger",
+    });
     return fallbackApiRes;
   }
 };

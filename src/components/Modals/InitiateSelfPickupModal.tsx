@@ -9,7 +9,7 @@ import {
   addToast,
   Spinner,
 } from "@heroui/react";
-import { CheckCircle, AlertCircle, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { initiateSelfPickup } from "@/routes/api";
 

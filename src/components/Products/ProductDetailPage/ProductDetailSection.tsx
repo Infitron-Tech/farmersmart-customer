@@ -378,7 +378,7 @@ const ProductDetailSection: FC<ProductDetailSectionProps> = ({
                       }
                     >
                       <div className="text-xs text-primary-500 font-semibold whitespace-nowrap flex items-center">
-                        <span className="mr-2">{t("delivery")}:</span>
+                        <span className="mr-2">Delivery:</span>
                         {initialProduct.estimated_delivery_time} {t("mins")}
                       </div>
                     </Button>

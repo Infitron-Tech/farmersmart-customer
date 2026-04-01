@@ -297,7 +297,117 @@
   "delete": "حذف",
   "delivering_to": "التوصيل إلى",
   "delivering_to_your_location": "يتم التوصيل إلى موقعك",
-  "delivery": "التوصيل",
+  "delivery": {
+    "selfPickup": {
+      "verify": "تحقق من عناصر الالتقاط الذاتي",
+      "verifyDescription": "يرجى التحقق من حالة كل عنصر التقطت. ضع علامة على أي تناقضات وجدت.",
+      "verified": "تم التحقق",
+      "processing": "المعالجة",
+      "preparing": "تحضير العناصر",
+      "readyPickup": "جاهز للالتقاط",
+      "pickedUp": "تم الالتقاط",
+      "description": "اجمع طلبك من موقع المتجر في وقت يناسبك",
+      "instructions": "كيفية الالتقاط",
+      "initiatePickup": "ابدأ الالتقاط",
+      "initiate": "بدء الالتقاط الذاتي",
+      "ready": "طلبك جاهز للالتقاط",
+      "initiateDescription": "اضغط على 'تأكيد الالتقاط' عند وصولك إلى المتجر لجمع طلبك.",
+      "steps": "ما الذي يحدث بعد ذلك:",
+      "step1": "توجه إلى موقع المتجر في وقت يناسبك",
+      "step2": "انقر فوق 'بدء الالتقاط' لبدء عملية التحقق",
+      "step3": "تحقق من حالة كل عنصر (جيد أو تالف أو مفقود)",
+      "step4": "أكد الاستلام وخذ طلبك",
+      "confirmPickup": "تأكيد الالتقاط",
+      "initiateSuccess": "تم تحديد الطلب كملتقط. يرجى التحقق من العناصر.",
+      "initiateFailed": "فشل تحديد الطلب كملتقط",
+      "pickedUpMsg": "لقد التقطت طلبك بنجاح",
+      "verifiedMsg": "تم التحقق من طلبك بنجاح",
+      "success": "نجاح"
+    },
+    "farmer": {
+      "processing": "المعالجة",
+      "preparing": "تحضير العناصر",
+      "readyDelivery": "جاهز للتوصيل",
+      "inTransit": "في الطريق",
+      "arrivingSoon": "قادم قريبا",
+      "delivered": "تم التوصيل",
+      "descProcessing": "يتم تحضير طلبك للتوصيل",
+      "descCollected": "تم تحضير طلبك وهو جاهز للتوصيل",
+      "descInTransit": "طلبك في الطريق إلى موقعك",
+      "descArrivingSoon": "سيصل طلبك قريبًا",
+      "descDelivered": "تم توصيل طلبك والتحقق منه"
+    },
+    "condition": {
+      "good": "جيد",
+      "damaged": "تالف",
+      "missing": "مفقود"
+    },
+    "discrepancy": {
+      "missing": "عناصر مفقودة",
+      "damaged": "عناصر تالفة",
+      "wrongQty": "كمية خاطئة",
+      "wrongItem": "عنصر خاطئ"
+    },
+    "verification": {
+      "success": {
+        "title": "نجاح",
+        "description": "اكتمل التحقق من التوصيل بنجاح"
+      },
+      "failed": {
+        "title": "فشل التحقق",
+        "description": "فشل إكمال التحقق"
+      }
+    },
+    "verifyAllItems": "يرجى التحقق من جميع العناصر قبل الإرسال",
+    "verifyItems": "التحقق من العناصر",
+    "reportDiscrepancy": "الإبلاغ عن التناقض",
+    "expected": "متوقع",
+    "actual": "الفعلي",
+    "notes": "ملاحظات إضافية...",
+    "addDetails": "إضافة التفاصيل",
+    "verificationSummary": "ملخص التحقق",
+    "itemsVerified": "العناصر المحققة",
+    "discrepanciesFound": "تم العثور على تناقضات",
+    "completeVerification": "إكمال التحقق",
+    "farmer": "مزارع / بائع",
+    "expectedDelivery": "التوصيل المتوقع",
+    "calculatingTime": "جاري الحساب...",
+    "farmerOnTheWay": "المزارع في طريقه لتوصيل طلبك",
+    "verified": "تم التحقق",
+    "uploadPhotos": "انقر لتحميل الصور",
+    "photosUploaded": "تم تحميل الصور",
+    "otp": "كلمة مرور لمرة واحدة",
+    "confirmPhone": "أؤكد أنني تلقيت رمز التحقق على هاتفي",
+    "noMethodsAvailable": "لا توجد طرق توصيل متاحة لهذا الموقع",
+    "selectAddress": "اختر عنوان التوصيل",
+    "selectAddressDescription": "يرجى اختيار عنوان التوصيل للمتابعة",
+    "selectMethod": "حدد طريقة التوصيل",
+    "selectMethodDescription": "اختر كيف تريد استقبال طلبك",
+    "methodRequired": "يرجى اختيار طريقة توصيل للمتابعة",
+    "free": "مجاني",
+    "contactFarmer": "اتصل بالمزارع",
+    "storeOperator": "مشغل المتجر",
+    "farmerInstructions": "معلومات توصيل المزارع",
+    "farmerInfo1": "سيقوم المزارع بتوصيل طلبك مباشرة إلى موقعك",
+    "farmerInfo2": "يمكنك الاتصال بالمزارع مباشرة للحصول على تحديثات التوصيل",
+    "farmerInfo3": "تحقق من العناصر عند التوصيل وأكد الاستلام",
+    "farmerInfo4": "احتفظ بهاتفك متاحًا لتأكيد التوصيل",
+    "photoLimitError": {
+      "title": "حد الصور",
+      "description": "يمكنك تحميل 5 صور كحد أقصى"
+    },
+    "photoValidation": {
+      "description": "يرجى تحميل ما بين 1 و 5 صور"
+    },
+    "otpValidation": {
+      "description": "يجب أن تكون كلمة المرور لمرة واحدة بالضبط 6 أرقام"
+    },
+    "phoneConfirmation": {
+      "description": "يرجى تأكيد رقم هاتفك"
+    },
+    "otpExpiryWarning": "تنتهي صلاحية كلمة المرور لمرة واحدة في 10 دقائق. الحد الأقصى 3 محاولات مسموحة.",
+    "estimatedDeliveryTime": "وقت التوصيل المقدر"
+  },
   "deliveryCharge": "رسوم التوصيل",
   "deliveryFee": "رسوم التوصيل:",
   "deliveryPartner": "شريك التوصيل",
@@ -1819,5 +1929,11 @@
   "attachments": "المرفقات",
   "openInNewTab": "فتح في علامة تبويب جديدة",
   "please_select_variant": "يرجى اختيار متغير",
-  "preview": "معاينة"
+  "preview": "معاينة",
+  "common": {
+    "cancel": "إلغاء",
+    "next": "التالي",
+    "processing": "جاري المعالجة...",
+    "submitting": "جاري الإرسال..."
+  }
 }

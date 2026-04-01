@@ -44,6 +44,9 @@ const CheckoutSection: FC<CheckoutSectionProps> = ({ cart }) => {
   const selectedAddress = useSelector(
     (state: RootState) => state.checkout.selectedAddress
   );
+  const selectedDeliveryMethod = useSelector(
+    (state: RootState) => state.checkout.deliveryMethod
+  );
 
   const dispatch = useDispatch();
 
@@ -172,6 +175,15 @@ const CheckoutSection: FC<CheckoutSectionProps> = ({ cart }) => {
       }, 500);
     } // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment_summary, dispatch]);
+
+  // Watch for delivery method changes and recalculate payment summary
+  useEffect(() => {
+    if (selectedDeliveryMethod && selectedAddress?.id) {
+      setTimeout(() => {
+        updateCartData(true, false);
+      }, 300);
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDeliveryMethod]);
 
   const promo = Array.isArray(payment_summary?.promo_applied)
     ? null

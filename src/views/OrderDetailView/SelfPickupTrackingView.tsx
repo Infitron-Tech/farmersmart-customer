@@ -41,44 +41,58 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Determine if any items have been picked up
-  const itemsPickedUp =
-    order.items && order.items.some((item: OrderItem) => item.status === "picked_up");
+  // Get the furthest status any item has reached
+  const getHighestItemStatus = (): string => {
+    const statusOrder = ["awaiting_store_response", "accepted", "preparing", "ready_for_pickup", "collected", "picked_up", "delivered"];
+    if (!order.items || order.items.length === 0) return "pending";
 
-  // Build timeline based on order status
+    const itemStatuses = order.items.map((item: OrderItem) => item.status);
+    for (const status of statusOrder.reverse()) {
+      if (itemStatuses.includes(status)) return status;
+    }
+    return "awaiting_store_response";
+  };
+
+  // Determine if any items have been picked up
+  const itemsPickedUp = order.items && order.items.some((item: OrderItem) => item.status === "picked_up");
+  const highestItemStatus = getHighestItemStatus();
+
+  // Build timeline based on actual item statuses, not order status
   const getTimeline = (): StatusTimeline[] => {
     const timeline: StatusTimeline[] = [
       {
         status: "pending",
         label: t("delivery.selfPickup.processing") || "Processing",
-        completed: ["pending", "awaiting_store_response", "accepted", "preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(order.status),
+        timestamp: order.created_at,
+        completed: true, // Order was always placed/pending at the start
         icon: <Clock className="w-5 h-5" />,
       },
       {
         status: "preparing",
         label: t("delivery.selfPickup.preparing") || "Preparing Items",
-        completed: ["preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(order.status),
+        timestamp: ["preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus) ? order.updated_at : undefined,
+        completed: ["preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus),
         icon: <Store className="w-5 h-5" />,
       },
       {
         status: "collected",
         label: t("delivery.selfPickup.readyPickup") || "Ready for Pickup",
-        timestamp: order.updated_at,
-        completed: ["ready_for_pickup", "collected", "picked_up", "delivered"].includes(order.status),
+        timestamp: ["ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus) ? order.updated_at : undefined,
+        completed: ["ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus),
         icon: <MapPin className="w-5 h-5" />,
       },
       {
         status: "picked_up",
         label: t("delivery.selfPickup.pickedUp") || "Picked Up",
         timestamp: itemsPickedUp ? order.updated_at : undefined,
-        completed: ["picked_up", "delivered"].includes(order.status),
+        completed: ["picked_up", "delivered"].includes(highestItemStatus),
         icon: <CheckCircle className="w-5 h-5" />,
       },
       {
         status: "delivered",
         label: t("delivery.selfPickup.verified") || "Verified",
-        timestamp: order.status === "delivered" ? order.updated_at : undefined,
-        completed: order.status === "delivered",
+        timestamp: highestItemStatus === "delivered" ? order.updated_at : undefined,
+        completed: highestItemStatus === "delivered",
         icon: <CheckCircle className="w-5 h-5" />,
       },
     ];
@@ -91,6 +105,11 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
   // Current status label
   const getStatusLabel = (): string => {
     switch (order.status) {
+      case "pending":
+      case "awaiting_store_response":
+      case "accepted":
+      case "preparing":
+        return t("delivery.selfPickup.processing") || "Processing";
       case "ready_for_pickup":
       case "collected":
         return t("delivery.selfPickup.readyPickup") || "Ready for Pickup";
@@ -99,7 +118,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
       case "delivered":
         return t("delivery.selfPickup.verified") || "Verified";
       default:
-        return t("delivery.selfPickup.processing") || "Processing";
+        return order.status?.replace(/_/g, " ").toUpperCase() || "Processing";
     }
   };
 
@@ -119,10 +138,10 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
   };
 
   // Determine which action button to show
-  const shouldShowInitiate =
-    (order.status === "ready_for_pickup" || order.status === "collected") && !itemsPickedUp;
-  const shouldShowVerify =
-    (order.status === "ready_for_pickup" || order.status === "collected") && itemsPickedUp;
+  // Show "Initiate Pickup" when order is ready for pickup
+  const shouldShowInitiate = order.status === "ready_for_pickup" || order.status === "collected";
+  // Show "Verify Items" when order has been picked up
+  const shouldShowVerify = order.status === "picked_up";
 
   return (
     <div className="space-y-6">

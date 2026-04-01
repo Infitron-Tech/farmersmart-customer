@@ -157,6 +157,8 @@ const PayStack: FC<{
         }
 
         orderData = res.data;
+        // Store the payment reference for order creation
+        transactionId = res.data?.transaction?.transaction_id;
 
         // ✅ Ensure we have a valid, unique reference
         if (!orderData.payment_response?.reference) {
@@ -177,7 +179,7 @@ const PayStack: FC<{
 
           const checkoutData: any = {
             reference: response.reference,
-            transaction_id: response.reference,
+            transaction_id: transactionId || response.reference,
             fulfillment_type: store.getState().checkout.deliveryMethod || "delivery_boy",
           };
 

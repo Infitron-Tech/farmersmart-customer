@@ -6,9 +6,6 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Select,
-  SelectItem,
-  Checkbox,
   addToast,
   Spinner,
   Card,
@@ -16,7 +13,7 @@ import {
   Input,
   Textarea,
 } from "@heroui/react";
-import { AlertCircle, CheckCircle, Package } from "lucide-react";
+import { AlertCircle, CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { completeSelfPickupVerification } from "@/routes/api";
 

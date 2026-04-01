@@ -556,6 +556,23 @@ export interface Order {
   items: OrderItem[];
   seller_feedbacks: SellerFeedbackItem[];
 
+  // Farmer Delivery Fields
+  delivery_partner_type?: string; // 'farmer' or 'delivery_boy'
+  delivery_partner_id?: number | null;
+  delivery_partner_name?: string;
+  delivery_partner_phone?: string | number;
+  delivery_partner_profile?: string;
+
+  // Store Reference
+  store?: {
+    id: number;
+    name: string;
+    address?: string;
+    phone?: string;
+    latitude?: string;
+    longitude?: string;
+  };
+
   created_at: string;
   updated_at: string;
 
@@ -695,7 +712,10 @@ export type OrderStatus =
   | "delivered"
   | "cancelled"
   | "preparing"
-  | "pending";
+  | "pending"
+  | "collected"
+  | "picked_up"
+  | "accepted";
 
 export type TransactionQueryArgs = {
   page?: number;

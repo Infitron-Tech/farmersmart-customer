@@ -65,9 +65,60 @@ export const orderStatusColorMap = (
       return "success";
     case "cancelled":
       return "danger";
+    case "collected":
+      return "secondary";
+    case "picked_up":
+      return "primary";
     default:
       return "default";
   }
+};
+
+export const getStatusLabel = (
+  status: OrderStatus | string | undefined,
+  fulfillmentType?: string
+): string => {
+  // If no fulfillment type, return formatted status
+  if (!fulfillmentType) {
+    return (status || "").replace(/_/g, " ").toUpperCase();
+  }
+
+  const labels: Record<string, Record<string, string>> = {
+    self_pickup: {
+      pending: "⏳ Processing",
+      awaiting_store_response: "⏱️ Confirming with Store",
+      accepted: "✓ Store Confirmed",
+      preparing: "📦 Preparing Items",
+      collected: "✓ Ready for Pickup",
+      picked_up: "🚚 Picked Up",
+      delivered: "✓ Delivered",
+    },
+    farmer_delivery: {
+      pending: "⏳ Processing",
+      awaiting_store_response: "⏱️ Confirming with Store",
+      accepted: "✓ Store Confirmed",
+      preparing: "📦 Preparing Items",
+      collected: "✓ Ready for Delivery",
+      picked_up: "🚚 In Transit",
+      out_for_delivery: "⏰ Arriving Soon",
+      delivered: "✓ Delivered",
+    },
+    delivery_boy: {
+      pending: "⏳ Processing",
+      awaiting_store_response: "⏱️ Confirming with Store",
+      accepted: "✓ Store Confirmed",
+      preparing: "📦 Preparing Items",
+      ready_for_pickup: "✓ Ready for Pickup",
+      assigned: "🚚 Assigned",
+      out_for_delivery: "⏰ Out for Delivery",
+      delivered: "✓ Delivered",
+    },
+  };
+
+  return (
+    labels[fulfillmentType]?.[status as string] ||
+    (status || "").replace(/_/g, " ").toUpperCase()
+  );
 };
 
 export const staticProfileImage =

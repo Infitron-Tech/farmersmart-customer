@@ -25,6 +25,8 @@ import SellerFeedbacks from "./SellerFeedbacks";
 import PageHead from "@/SEO/PageHead";
 import CancelOrderItemModal from "@/components/Modals/CancelOrderItemModal";
 import dynamic from "next/dynamic";
+import SelfPickupTrackingView from "./SelfPickupTrackingView";
+import FarmerDeliveryTrackingView from "./FarmerDeliveryTrackingView";
 
 const TrackOrderModal = dynamic(
   () => import("@/components/Modals/TrackOrderModal"),
@@ -181,6 +183,25 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Order Items & Details */}
             <div className="lg:col-span-2 space-y-4">
+              {/* Tracking Views based on Fulfillment Type */}
+              {order.fulfillment_type === "self_pickup" && (
+                <SelfPickupTrackingView
+                  order={order}
+                  onInitiateSelfPickupOpen={onInitiateSelfPickupOpen}
+                  onSelfPickupVerifyOpen={onSelfPickupVerifyOpen}
+                  onStatusUpdated={() => {
+                    // Trigger parent refresh if needed
+                  }}
+                />
+              )}
+
+              {order.fulfillment_type === "farmer_delivery" && (
+                <FarmerDeliveryTrackingView
+                  order={order}
+                  onFarmerVerifyOpen={onFarmerVerifyOpen}
+                />
+              )}
+
               {/* Order Items */}
               <OrderItems
                 onOpen={onOpen}
@@ -313,7 +334,7 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
         />
         {/* Initiate Self-Pickup Modal */}
         {order.fulfillment_type === "self_pickup" &&
-          order.status === "ready_for_pickup" && (
+          (order.status === "ready_for_pickup" || order.status === "collected") && (
             <InitiateSelfPickupModal
               isOpen={isInitiateSelfPickupOpen}
               onOpenChange={onInitiateSelfPickupClose}
@@ -328,7 +349,8 @@ const OrderDetailPageView: React.FC<OrderDetailPageViewProps> = ({ order }) => {
         {/* Self-Pickup Verification Modal */}
         {order.fulfillment_type === "self_pickup" &&
           (order.status === "ready_for_pickup" ||
-            order.status === "partially_accepted") && (
+            order.status === "partially_accepted" ||
+            order.status === "picked_up") && (
             <SelfPickupVerificationModal
               isOpen={isSelfPickupVerifyOpen}
               onOpenChange={onSelfPickupVerifyClose}
