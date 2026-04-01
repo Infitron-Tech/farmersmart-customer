@@ -32,7 +32,6 @@ interface StatusTimeline {
   label: string;
   timestamp?: string;
   completed: boolean;
-  icon: React.ReactNode;
 }
 
 const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
@@ -43,6 +42,26 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
 
   // Normalize status to lowercase for comparison
   const normalizedStatus = order.status?.toLowerCase() || "";
+
+  // Render icon based on status (inline rendering to avoid React error #418)
+  const renderIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Clock className="w-5 h-5" />;
+      case "preparing":
+        return <Store className="w-5 h-5" />;
+      case "collected":
+        return <MapPin className="w-5 h-5" />;
+      case "picked_up":
+        return <Truck className="w-5 h-5" />;
+      case "out_for_delivery":
+        return <Navigation className="w-5 h-5" />;
+      case "delivered":
+        return <CheckCircle className="w-5 h-5" />;
+      default:
+        return <Clock className="w-5 h-5" />;
+    }
+  };
 
   // Build timeline based on order status
   const getTimeline = (): StatusTimeline[] => {
@@ -62,7 +81,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "delivered",
           "accepted_by_seller",
         ].includes(normalizedStatus),
-        icon: <Clock className="w-5 h-5" />,
       },
       {
         status: "preparing",
@@ -74,7 +92,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "out_for_delivery",
           "delivered",
         ].includes(normalizedStatus),
-        icon: <Store className="w-5 h-5" />,
       },
       {
         status: "collected",
@@ -86,7 +103,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           "out_for_delivery",
           "delivered",
         ].includes(normalizedStatus),
-        icon: <MapPin className="w-5 h-5" />,
       },
       {
         status: "picked_up",
@@ -97,7 +113,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           ? order.updated_at
           : undefined,
         completed: ["out_for_delivery", "delivered"].includes(normalizedStatus),
-        icon: <Truck className="w-5 h-5" />,
       },
       {
         status: "out_for_delivery",
@@ -106,7 +121,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
           ? order.updated_at
           : undefined,
         completed: normalizedStatus === "delivered",
-        icon: <Navigation className="w-5 h-5" />,
       },
       {
         status: "delivered",
@@ -114,7 +128,6 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
         timestamp:
           normalizedStatus === "delivered" ? order.updated_at : undefined,
         completed: normalizedStatus === "delivered",
-        icon: <CheckCircle className="w-5 h-5" />,
       },
     ];
 
@@ -371,7 +384,7 @@ const FarmerDeliveryTrackingView: FC<FarmerDeliveryTrackingViewProps> = ({
                         : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
                     }`}
                   >
-                    {step.icon}
+                    {renderIcon(step.status)}
                   </div>
                   {index < timeline.length - 1 && (
                     <div

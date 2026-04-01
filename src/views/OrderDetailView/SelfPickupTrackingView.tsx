@@ -31,7 +31,6 @@ interface StatusTimeline {
   label: string;
   timestamp?: string;
   completed: boolean;
-  icon: React.ReactNode;
 }
 
 const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
@@ -60,6 +59,24 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
   const itemsPickedUp = order.items && order.items.some((item: OrderItem) => item.status === "picked_up");
   const highestItemStatus = getHighestItemStatus();
 
+  // Render icon based on status (inline rendering to avoid React error #418)
+  const renderIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Clock className="w-5 h-5" />;
+      case "preparing":
+        return <Store className="w-5 h-5" />;
+      case "collected":
+        return <MapPin className="w-5 h-5" />;
+      case "picked_up":
+        return <CheckCircle className="w-5 h-5" />;
+      case "delivered":
+        return <CheckCircle className="w-5 h-5" />;
+      default:
+        return <Clock className="w-5 h-5" />;
+    }
+  };
+
   // Build timeline based on actual item statuses, not order status
   const getTimeline = (): StatusTimeline[] => {
     const timeline: StatusTimeline[] = [
@@ -68,35 +85,30 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
         label: t("delivery.selfPickup.processing") || "Processing",
         timestamp: order.created_at,
         completed: true, // Order was always placed/pending at the start
-        icon: <Clock className="w-5 h-5" />,
       },
       {
         status: "preparing",
         label: t("delivery.selfPickup.preparing") || "Preparing Items",
         timestamp: ["preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus) ? order.updated_at : undefined,
         completed: ["preparing", "ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus),
-        icon: <Store className="w-5 h-5" />,
       },
       {
         status: "collected",
         label: t("delivery.selfPickup.readyPickup") || "Ready for Pickup",
         timestamp: ["ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus) ? order.updated_at : undefined,
         completed: ["ready_for_pickup", "collected", "picked_up", "delivered"].includes(highestItemStatus),
-        icon: <MapPin className="w-5 h-5" />,
       },
       {
         status: "picked_up",
         label: t("delivery.selfPickup.pickedUp") || "Picked Up",
         timestamp: itemsPickedUp ? order.updated_at : undefined,
         completed: ["picked_up", "delivered"].includes(highestItemStatus),
-        icon: <CheckCircle className="w-5 h-5" />,
       },
       {
         status: "delivered",
         label: t("delivery.selfPickup.verified") || "Verified",
         timestamp: highestItemStatus === "delivered" ? order.updated_at : undefined,
         completed: highestItemStatus === "delivered",
-        icon: <CheckCircle className="w-5 h-5" />,
       },
     ];
 
@@ -285,7 +297,7 @@ const SelfPickupTrackingView: FC<SelfPickupTrackingViewProps> = ({
                         : "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500"
                     }`}
                   >
-                    {step.icon}
+                    {renderIcon(step.status)}
                   </div>
                   {index < timeline.length - 1 && (
                     <div
