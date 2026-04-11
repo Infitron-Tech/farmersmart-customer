@@ -58,6 +58,21 @@ const Footer: FC = () => {
     }
   }, [webSettings?.footerScript]);
 
+  // Load Bitrix24 Chat Widget
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://cdn.bitrix24.com/b35146879/crm/site_button/loader_8_8evb7f.js?${Math.floor(Date.now() / 60000)}`;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup if needed
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
   return (
     <footer className="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white w-full">
       <div className="w-full max-w-384 mx-auto px-2 sm:px-6 pt-6 sm:pt-12 pb-3 sm:pb-5">
