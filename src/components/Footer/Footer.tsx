@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import {
   FaFacebookF,
   FaInstagram,
@@ -23,6 +23,7 @@ const Footer: FC = () => {
   const { webSettings } = useSettings();
   const { t } = useTranslation();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const footerRef = useRef<HTMLElement>(null);
 
   const version = process.env.NEXT_PUBLIC_APP_VERSION || "0";
 
@@ -63,7 +64,13 @@ const Footer: FC = () => {
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://cdn.bitrix24.com/b35146879/crm/site_button/loader_8_8evb7f.js?${Math.floor(Date.now() / 60000)}`;
-    document.body.appendChild(script);
+
+    // Append to footer element instead of document.body
+    if (footerRef.current) {
+      footerRef.current.appendChild(script);
+    } else {
+      document.body.appendChild(script);
+    }
 
     return () => {
       // Cleanup if needed
@@ -74,7 +81,7 @@ const Footer: FC = () => {
   }, []);
 
   return (
-    <footer className="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white w-full">
+    <footer ref={footerRef} className="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white w-full">
       <div className="w-full max-w-384 mx-auto px-2 sm:px-6 pt-6 sm:pt-12 pb-3 sm:pb-5">
         {/* Mobile Compact Layout */}
         <div className="block sm:hidden space-y-6">
