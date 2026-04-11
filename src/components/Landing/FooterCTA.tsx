@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -11,6 +11,21 @@ const BecomeFarmerButton = dynamic(
 
 const FooterCTA: FC = () => {
   const { webSettings } = useSettings();
+
+  // Load Bitrix24 Chat Widget
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://cdn.bitrix24.com/b35146879/crm/site_button/loader_8_8evb7f.js?${Math.floor(Date.now() / 60000)}`;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup if needed
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
 
   const footerLinks = {
     company: [
@@ -194,9 +209,6 @@ const FooterCTA: FC = () => {
           >
             <p>
               {webSettings?.siteCopyright || `© ${new Date().getFullYear()} FarmersMart. All rights reserved.`}
-            </p>
-            <p>
-              Made with <span className="text-red-500">❤️</span> by the {webSettings?.siteName || "FarmersMart"} team
             </p>
           </motion.div>
         </div>

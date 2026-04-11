@@ -1,8 +1,23 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
 const FooterCTABanner: FC = () => {
+  // Load Bitrix24 Chat Widget
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://cdn.bitrix24.com/b35146879/crm/site_button/loader_8_8evb7f.js?${Math.floor(Date.now() / 60000)}`;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup if needed
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
   return (
     <section className="py-20 md:py-28 bg-linear-to-br from-green-700 via-green-600 to-emerald-700 relative overflow-hidden w-full">
       {/* Decorative shapes */}

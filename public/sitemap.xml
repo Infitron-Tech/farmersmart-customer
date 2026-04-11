@@ -3,205 +3,223 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>xxxxxxxxxx/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>1.0</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/about-us/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/brands/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/categories/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/delivery-zones/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/faqs/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/feature-sections/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.5</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/privacy-policy/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.4</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/return-refund-policy/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.4</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/seller-register/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.6</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/shipping-policy/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.4</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/stores/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/terms-and-conditions/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.4</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/categories/fruit-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/categories/grains-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/categories/tuber-crop-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/categories/vegetables-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
+    <loc>xxxxxxxxxx/brands/oloyin/</loc>
+    <lastmod>2026-04-11</lastmod>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>xxxxxxxxxx/stores/farm-produce-store/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/stores/farm1-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/stores/farm2-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/stores/ifo-farm/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/stores/nfasil-pickup/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.7</priority>
   </url>
 
   <url>
+    <loc>xxxxxxxxxx/products/beans/</loc>
+    <lastmod>2026-04-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>xxxxxxxxxx/products/vitarush/</loc>
+    <lastmod>2026-04-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>xxxxxxxxxx/products/rice-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/phemfarmsupllies-pineapple/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/pineapple/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/maize-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/tomatoes/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/yam/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/maize/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/wholeweat-1/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/casava/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/offada/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>xxxxxxxxxx/products/rice/</loc>
-    <lastmod>2026-04-01</lastmod>
+    <lastmod>2026-04-11</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

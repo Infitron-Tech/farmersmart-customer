@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 import { staticProfileImage } from "@/config/constants";
 import { useTranslation } from "react-i18next";
+import { getCookie } from "@/lib/cookies";
 import {
   User,
   Package,
@@ -36,7 +37,20 @@ const ProfileBtn: FC = () => {
     if (route === "logout") {
       onOpen();
     } else if (route === "farmer-dashboard") {
-      window.open("https://backend.farmersmart.ng/seller", "_blank");
+      // Get access token from cookie
+      const accessToken = getCookie("access_token");
+
+      if (accessToken) {
+        // Get seller dashboard URL from environment or construct it
+        const adminPanelUrl = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL || "https://staging.FarmersMart.ng";
+        const sellerDashboardUrl = `${adminPanelUrl}/seller/dashboard?token=${accessToken}`;
+
+        // Redirect to seller dashboard with token for auto-login
+        window.location.href = sellerDashboardUrl;
+      } else {
+        // Fallback if token not found
+        window.location.href = `${process.env.NEXT_PUBLIC_ADMIN_PANEL_URL}/seller/login`;
+      }
     } else {
       router.push(route);
     }
