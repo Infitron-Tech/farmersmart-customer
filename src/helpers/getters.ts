@@ -81,17 +81,22 @@ export const getSlugFromContext = (context: GetServerSidePropsContext) => {
 export function getFirebaseConfig(settings: Settings | null | undefined) {
   // Fallback if no settings provided
   if (!settings) {
-    console.warn("Settings not available, using fallback Firebase config");
+    console.warn("❌ Settings not available, using fallback Firebase config");
     return FALLBACK_FIREBASE_CONFIG;
   }
+
+  console.log("✅ Settings array found, length:", settings.length);
 
   const authSettings = settings.find(
     (item) => item.variable === "authentication"
   )?.value as AuthenticationSettings;
 
+  console.log("✅ Auth Settings found:", authSettings);
+  console.log("✅ Firebase enabled?", authSettings?.firebase);
+
   // If auth settings don't exist or Firebase is disabled, use fallback
   if (!authSettings || !authSettings.firebase) {
-    console.warn("Firebase config not found in settings, using fallback config");
+    console.warn("❌ Firebase config not found in settings, using fallback config");
     return FALLBACK_FIREBASE_CONFIG;
   }
 
