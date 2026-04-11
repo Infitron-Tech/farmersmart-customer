@@ -1851,3 +1851,30 @@ export const completeSelfPickupVerification = async (data: {
     return fallbackApiRes;
   }
 };
+
+// Landing Page API Functions
+export const getLandingPageStats = async (): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.get<ApiResponse<any>>("/landing-page/stats");
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};
+
+export const getLandingPageTestimonials = async (): Promise<ApiResponse<any>> => {
+  try {
+    const response = await api.get<ApiResponse<any>>("/landing-page/testimonials");
+    return response.data;
+  } catch (error: any) {
+    console.error("API error:", error);
+    if (error?.response?.data) {
+      return error.response.data;
+    }
+    return fallbackApiRes;
+  }
+};

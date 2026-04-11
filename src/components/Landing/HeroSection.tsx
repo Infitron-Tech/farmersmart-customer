@@ -1,8 +1,36 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { getLandingPageStats } from "@/routes/api";
+
+interface StatsData {
+  total_customers: number;
+  total_farmers: number;
+  average_rating: number;
+}
 
 const HeroSection: FC = () => {
+  const [stats, setStats] = useState<StatsData>({
+    total_customers: 0,
+    total_farmers: 0,
+    average_rating: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await getLandingPageStats();
+        if (response.success) {
+          setStats(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -104,15 +132,27 @@ const HeroSection: FC = () => {
               className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 pt-4"
             >
               <div className="text-center md:text-left">
-                <p className="text-2xl sm:text-3xl font-bold text-green-900">50K+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-green-900">
+                  {stats.total_customers > 0
+                    ? `${Math.floor(stats.total_customers / 1000)}K+`
+                    : "Loading..."}
+                </p>
                 <p className="text-xs sm:text-sm text-gray-600">Happy Customers</p>
               </div>
               <div className="text-center md:text-left">
-                <p className="text-2xl sm:text-3xl font-bold text-green-900">2000+</p>
+                <p className="text-2xl sm:text-3xl font-bold text-green-900">
+                  {stats.total_farmers > 0
+                    ? `${stats.total_farmers}+`
+                    : "Loading..."}
+                </p>
                 <p className="text-xs sm:text-sm text-gray-600">Farmers Trusted</p>
               </div>
               <div className="text-center md:text-left">
-                <p className="text-2xl sm:text-3xl font-bold text-green-900">4.8★</p>
+                <p className="text-2xl sm:text-3xl font-bold text-green-900">
+                  {stats.average_rating > 0
+                    ? `${stats.average_rating.toFixed(1)}★`
+                    : "Loading..."}
+                </p>
                 <p className="text-xs sm:text-sm text-gray-600">App Rating</p>
               </div>
             </motion.div>

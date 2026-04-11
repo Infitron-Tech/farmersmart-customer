@@ -1,12 +1,20 @@
 import { FC, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { getLandingPageStats } from "@/routes/api";
 
 interface Stat {
   icon: string;
-  value: string;
+  value: number | string;
   label: string;
   description: string;
+}
+
+interface StatsData {
+  total_customers: number;
+  total_farmers: number;
+  average_rating: number;
+  total_reviews: number;
 }
 
 const CountUp: FC<{ target: number; suffix?: string }> = ({ target, suffix = "" }) => {
@@ -43,32 +51,52 @@ const CountUp: FC<{ target: number; suffix?: string }> = ({ target, suffix = "" 
 };
 
 const StatsSection: FC = () => {
-  const stats: Stat[] = [
-    {
-      icon: "👨‍🌾",
-      value: "2000+",
-      label: "Farmers",
-      description: "Local farmers partnered for quality produce",
-    },
-    {
-      icon: "👥",
-      value: "50K+",
-      label: "Happy Customers",
-      description: "Satisfied customers in 20+ cities",
-    },
-    {
-      icon: "📦",
-      value: "10K+",
-      label: "Products",
-      description: "Fresh items available daily",
-    },
-    {
-      icon: "⭐",
-      value: "4.8",
-      label: "App Rating",
-      description: "Average rating from 15K+ reviews",
-    },
-  ];
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await getLandingPageStats();
+        if (response.success) {
+          const data: StatsData = response.data;
+          setStats([
+            {
+              icon: "👨‍🌾",
+              value: data.total_farmers,
+              label: "Farmers",
+              description: "Local farmers partnered for quality produce",
+            },
+            {
+              icon: "👥",
+              value: data.total_customers,
+              label: "Happy Customers",
+              description: "Satisfied customers in 20+ cities",
+            },
+            {
+              icon: "📦",
+              value: "10K+",
+              label: "Products",
+              description: "Fresh items available daily",
+            },
+            {
+              icon: "⭐",
+              value: data.average_rating ? data.average_rating.toFixed(1) : "4.8",
+              label: "App Rating",
+              description: `Average rating from ${data.total_reviews}+ reviews`,
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats:", error);
+        setStats([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -121,30 +149,47 @@ const StatsSection: FC = () => {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="text-center text-white"
-            >
-              <motion.div
-                className="text-6xl mb-4 inline-block"
-                whileHover={{ scale: 1.1, rotate: 10 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                {stat.icon}
-              </motion.div>
+          {stats.length > 0 ? (
+            stats.map((stat, index) => {
+              const isNumeric = typeof stat.value === "number";
+              const displayValue = isNumeric ? stat.value : stat.value;
+              const displaySuffix = isNumeric ? "+" : "";
+              const countUpTarget = isNumeric ? Math.round(displayValue / 1000) : 0;
 
-              <h3 className="text-5xl font-bold mb-2">
-                <CountUp target={parseInt(stat.value)} suffix={stat.value.includes("+") ? "+" : ""} />
-              </h3>
+              return (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="text-center text-white"
+                >
+                  <motion.div
+                    className="text-6xl mb-4 inline-block"
+                    whileHover={{ scale: 1.1, rotate: 10 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    {stat.icon}
+                  </motion.div>
 
-              <p className="text-green-50 font-semibold mb-2">{stat.label}</p>
-              <p className="text-green-100 text-sm opacity-80">
-                {stat.description}
-              </p>
-            </motion.div>
-          ))}
+                  <h3 className="text-5xl font-bold mb-2">
+                    {isNumeric ? (
+                      <>
+                        <CountUp target={countUpTarget} suffix={`K${displaySuffix}`} />
+                      </>
+                    ) : (
+                      displayValue
+                    )}
+                  </h3>
+
+                  <p className="text-green-50 font-semibold mb-2">{stat.label}</p>
+                  <p className="text-green-100 text-sm opacity-80">
+                    {stat.description}
+                  </p>
+                </motion.div>
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center text-white">Loading stats...</div>
+          )}
         </motion.div>
 
         {/* Trust Badges */}

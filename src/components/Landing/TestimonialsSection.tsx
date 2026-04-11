@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { getLandingPageTestimonials } from "@/routes/api";
 
 interface Testimonial {
   id: number;
@@ -15,49 +16,47 @@ interface Testimonial {
   rating: number;
 }
 
+interface ReviewData {
+  id: number;
+  rating: number;
+  comment: string;
+  user: {
+    id: number;
+    name: string;
+  };
+  created_at: string;
+}
+
 const TestimonialsSection: FC = () => {
-  const testimonials: Testimonial[] = [
-    {
-      id: 1,
-      name: "Priya Sharma",
-      role: "Homemaker, Delhi",
-      image: "👩",
-      text: "FarmersMart has changed how I buy groceries. Fresh vegetables delivered daily at prices way better than my local market. Highly recommended!",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Raj Kumar",
-      role: "Software Engineer, Bangalore",
-      image: "👨",
-      text: "The quality is exceptional. I was skeptical at first, but the organic certification and daily delivery convinced me. Now it's my go-to app.",
-      rating: 5,
-    },
-    {
-      id: 3,
-      name: "Amit Patel",
-      role: "Restaurant Owner, Mumbai",
-      image: "👨‍🍳",
-      text: "As a restaurant owner, I need consistent quality. FarmersMart has been my trusted supplier for 6 months. Amazing pricing for bulk orders!",
-      rating: 5,
-    },
-    {
-      id: 4,
-      name: "Neha Singh",
-      role: "Fitness Coach, Pune",
-      image: "👩‍🏫",
-      text: "Love the organic selection! All my clients ask where I get such fresh produce. Customer service is also fantastic.",
-      rating: 5,
-    },
-    {
-      id: 5,
-      name: "Vikram Gupta",
-      role: "Retired Professional, Delhi",
-      image: "👨‍🦳",
-      text: "Supporting local farmers while getting fresh produce. It's a win-win. The app is easy to use even for someone like me!",
-      rating: 5,
-    },
-  ];
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await getLandingPageTestimonials();
+        if (response.success && response.data) {
+          const reviews: ReviewData[] = response.data;
+          const formattedTestimonials: Testimonial[] = reviews.map((review) => ({
+            id: review.id,
+            name: review.user.name || "Anonymous",
+            role: "FarmersMart Customer", // Using default since API doesn't include profession/city
+            image: "👤",
+            text: review.comment || "Great product and service!",
+            rating: review.rating || 5,
+          }));
+          setTestimonials(formattedTestimonials);
+        }
+      } catch (error) {
+        console.error("Failed to fetch testimonials:", error);
+        setTestimonials([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
 
   return (
     <section className="py-20 md:py-32 bg-white relative overflow-hidden">
@@ -89,65 +88,75 @@ const TestimonialsSection: FC = () => {
           viewport={{ once: true }}
           className="relative"
         >
-          <Swiper
-            modules={[Autoplay, Navigation, Pagination]}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            navigation={{
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            spaceBetween={24}
-            slidesPerView={1}
-            breakpoints={{
-              768: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 3,
-              },
-            }}
-            className="pb-16"
-          >
-            {testimonials.map((testimonial) => (
-              <SwiperSlide key={testimonial.id}>
-                <div className="bg-gray-50 rounded-2xl p-8 h-full border border-gray-200 hover:border-green-200 hover:shadow-lg transition-all duration-300">
-                  {/* Rating */}
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <span key={i} className="text-amber-400 text-lg">
-                        ★
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Review Text */}
-                  <p className="text-gray-700 mb-6 leading-relaxed italic">
-                    &quot;{testimonial.text}&quot;
-                  </p>
-
-                  {/* User Info */}
-                  <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
-                    <div className="w-12 h-12 bg-linear-to-br from-green-400 to-amber-400 rounded-full flex items-center justify-center text-2xl">
-                      {testimonial.image}
+          {loading ? (
+            <div className="text-center py-16">
+              <p className="text-gray-600">Loading testimonials...</p>
+            </div>
+          ) : testimonials.length > 0 ? (
+            <Swiper
+              modules={[Autoplay, Navigation, Pagination]}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              navigation={{
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              }}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{
+                768: {
+                  slidesPerView: 2,
+                },
+                1024: {
+                  slidesPerView: 3,
+                },
+              }}
+              className="pb-16"
+            >
+              {testimonials.map((testimonial) => (
+                <SwiperSlide key={testimonial.id}>
+                  <div className="bg-gray-50 rounded-2xl p-8 h-full border border-gray-200 hover:border-green-200 hover:shadow-lg transition-all duration-300">
+                    {/* Rating */}
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <span key={i} className="text-amber-400 text-lg">
+                          ★
+                        </span>
+                      ))}
                     </div>
-                    <div>
-                      <p className="font-bold text-gray-900">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+
+                    {/* Review Text */}
+                    <p className="text-gray-700 mb-6 leading-relaxed italic">
+                      &quot;{testimonial.text}&quot;
+                    </p>
+
+                    {/* User Info */}
+                    <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+                      <div className="w-12 h-12 bg-linear-to-br from-green-400 to-amber-400 rounded-full flex items-center justify-center text-2xl">
+                        {testimonial.image}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900">
+                          {testimonial.name}
+                        </p>
+                        <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-gray-600">No testimonials available</p>
+            </div>
+          )}
 
           {/* Custom navigation buttons */}
           <button className="swiper-button-prev absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors duration-300 -translate-x-6 md:translate-x-0">
