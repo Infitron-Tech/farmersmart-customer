@@ -13,6 +13,11 @@ import {
 } from "@/types/ApiResponse";
 import { parse } from "cookie";
 import { GetServerSidePropsContext } from "next";
+import {
+  FALLBACK_FIREBASE_CONFIG,
+  FALLBACK_RECAPTCHA_CONFIG,
+  FALLBACK_NOTIFICATION_CONFIG,
+} from "@/config/firebaseConfig";
 
 export const getFlagEmoji = (countryCode: string): string => {
   const normalizedCode = countryCode.toLowerCase(); // Convert to lowercase as URLs are case-sensitive
@@ -73,25 +78,33 @@ export const getSlugFromContext = (context: GetServerSidePropsContext) => {
     : context.params?.slug || "";
 };
 
-export function getFirebaseConfig(settings: Settings) {
+export function getFirebaseConfig(settings: Settings | null | undefined) {
+  // Fallback if no settings provided
+  if (!settings) {
+    console.warn("Settings not available, using fallback Firebase config");
+    return FALLBACK_FIREBASE_CONFIG;
+  }
+
   const authSettings = settings.find(
     (item) => item.variable === "authentication"
   )?.value as AuthenticationSettings;
 
+  // If auth settings don't exist or Firebase is disabled, use fallback
   if (!authSettings || !authSettings.firebase) {
-    console.error("Firebase is not enabled or missing configuration.");
-    return null;
+    console.warn("Firebase config not found in settings, using fallback config");
+    return FALLBACK_FIREBASE_CONFIG;
   }
 
+  // Return database config if available, otherwise use fallback
   return {
-    apiKey: authSettings.fireBaseApiKey,
-    authDomain: authSettings.fireBaseAuthDomain,
-    databaseURL: authSettings.fireBaseDatabaseURL,
-    projectId: authSettings.fireBaseProjectId,
-    storageBucket: authSettings.fireBaseStorageBucket,
-    messagingSenderId: authSettings.fireBaseMessagingSenderId,
-    appId: authSettings.fireBaseAppId,
-    measurementId: authSettings.fireBaseMeasurementId,
+    apiKey: authSettings.fireBaseApiKey || FALLBACK_FIREBASE_CONFIG.apiKey,
+    authDomain: authSettings.fireBaseAuthDomain || FALLBACK_FIREBASE_CONFIG.authDomain,
+    databaseURL: authSettings.fireBaseDatabaseURL || FALLBACK_FIREBASE_CONFIG.databaseURL,
+    projectId: authSettings.fireBaseProjectId || FALLBACK_FIREBASE_CONFIG.projectId,
+    storageBucket: authSettings.fireBaseStorageBucket || FALLBACK_FIREBASE_CONFIG.storageBucket,
+    messagingSenderId: authSettings.fireBaseMessagingSenderId || FALLBACK_FIREBASE_CONFIG.messagingSenderId,
+    appId: authSettings.fireBaseAppId || FALLBACK_FIREBASE_CONFIG.appId,
+    measurementId: authSettings.fireBaseMeasurementId || FALLBACK_FIREBASE_CONFIG.measurementId,
   };
 }
 
@@ -153,6 +166,42 @@ export function getSpecificSettings(
   }
 
   return setting.value;
+}
+
+export function getRecaptchaSiteKey(
+  settings: Settings | undefined | null
+): string {
+  // Get auth settings
+  const authSettings = getSpecificSettings(
+    settings,
+    "authentication"
+  ) as AuthenticationSettings | undefined;
+
+  // Return from settings if available, otherwise use fallback
+  if (authSettings?.googleRecaptchaSiteKey) {
+    return authSettings.googleRecaptchaSiteKey;
+  }
+
+  console.warn("reCAPTCHA site key not found in settings, using fallback");
+  return FALLBACK_RECAPTCHA_CONFIG.siteKey;
+}
+
+export function getVapidKey(
+  settings: Settings | undefined | null
+): string {
+  // Get notification settings
+  const notificationSettings = getSpecificSettings(
+    settings,
+    "notification"
+  ) as NotificationSettings | undefined;
+
+  // Return from settings if available, otherwise use fallback
+  if (notificationSettings?.vapIdKey) {
+    return notificationSettings.vapIdKey;
+  }
+
+  console.warn("VAPID key not found in settings, using fallback");
+  return FALLBACK_NOTIFICATION_CONFIG.vapIdKey;
 }
 
 export const getCookieFromContext = <T>(
