@@ -152,9 +152,7 @@ const StatsSection: FC = () => {
           {stats.length > 0 ? (
             stats.map((stat, index) => {
               const isNumeric = typeof stat.value === "number";
-              const displayValue = isNumeric ? stat.value : stat.value;
-              const displaySuffix = isNumeric ? "+" : "";
-              const countUpTarget = isNumeric ? Math.round(displayValue / 1000) : 0;
+              const countUpTarget = isNumeric ? Math.round((stat.value as number) / 1000) : 0;
 
               return (
                 <motion.div
@@ -173,10 +171,10 @@ const StatsSection: FC = () => {
                   <h3 className="text-5xl font-bold mb-2">
                     {isNumeric ? (
                       <>
-                        <CountUp target={countUpTarget} suffix={`K${displaySuffix}`} />
+                        <CountUp target={countUpTarget} suffix="K+" />
                       </>
                     ) : (
-                      displayValue
+                      stat.value
                     )}
                   </h3>
 
