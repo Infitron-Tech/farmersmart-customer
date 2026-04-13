@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -11,26 +11,27 @@ const BecomeFarmerButton = dynamic(
 
 const FooterCTA: FC = () => {
   const { webSettings } = useSettings();
-  const footerRef = useRef<HTMLDivElement>(null);
 
   // Load Bitrix24 Chat Widget
   useEffect(() => {
+    // Inject CSS override to ensure widget stays at bottom of viewport
+    const style = document.createElement("style");
+    style.id = "bitrix-position-override";
+    style.textContent = `
+      .b24-widget-button-wrapper { bottom: 20px !important; top: auto !important; }
+      #bx-button-wrapper { bottom: 20px !important; top: auto !important; }
+    `;
+    if (!document.getElementById("bitrix-position-override")) {
+      document.head.appendChild(style);
+    }
+
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://cdn.bitrix24.com/b35146879/crm/site_button/loader_8_8evb7f.js?${Math.floor(Date.now() / 60000)}`;
-
-    // Append to footer element instead of document.body
-    if (footerRef.current) {
-      footerRef.current.appendChild(script);
-    } else {
-      document.body.appendChild(script);
-    }
+    document.body.appendChild(script);
 
     return () => {
-      // Cleanup if needed
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      if (script.parentNode) script.parentNode.removeChild(script);
     };
   }, []);
 
@@ -81,7 +82,7 @@ const FooterCTA: FC = () => {
   };
 
   return (
-    <footer ref={footerRef} className="bg-linear-to-r from-green-800 to-green-900 text-white w-full">
+    <footer className="bg-linear-to-r from-green-800 to-green-900 text-white w-full">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-16">
           <motion.div
             className="grid md:grid-cols-5 gap-8 mb-12"

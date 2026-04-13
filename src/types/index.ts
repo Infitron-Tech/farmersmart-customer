@@ -6,6 +6,6 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type NextPageWithLayout<P = object> = NextPage<P> & {
-  getLayout?: (page: ReactNode) => ReactNode;
+  getLayout?: (page: ReactNode, pageProps?: Record<string, any>) => ReactNode;
   pageTitle?: string;
 };

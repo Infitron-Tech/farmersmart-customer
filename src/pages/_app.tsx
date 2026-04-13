@@ -95,7 +95,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             ),
           }}
         />
-        <ReduxProvider>{getLayout(<Component {...pageProps} />)}</ReduxProvider>
+        <ReduxProvider>{getLayout(<Component {...pageProps} />, pageProps)}</ReduxProvider>
       </NextThemesProvider>
     </HeroUIProvider>
   );

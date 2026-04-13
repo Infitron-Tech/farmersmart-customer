@@ -46,9 +46,9 @@ const LandingIndex = ({ isLoggedIn }: LandingIndexProps) => {
   return <LandingPage />;
 };
 
-// Use LandingLayout
-LandingIndex.getLayout = (page: React.ReactNode) => (
-  <LandingLayout>{page}</LandingLayout>
+// Use LandingLayout — forward initialSettings from SSR so Firebase inits immediately
+LandingIndex.getLayout = (page: React.ReactNode, pageProps?: Record<string, any>) => (
+  <LandingLayout initialSettings={pageProps?.initialSettings}>{page}</LandingLayout>
 );
 
 export const getServerSideProps: GetServerSideProps<LandingIndexProps> | undefined =

@@ -109,9 +109,6 @@ export default function FirebaseInitializer({
 
   useEffect(() => {
     try {
-      // Debug logging
-      console.log("🔍 FirebaseInitializer - Settings received:", settings);
-
       const firebaseConfig = getFirebaseConfig(settings);
       const notificationSettings = getSpecificSettings(
         settings,
@@ -120,14 +117,7 @@ export default function FirebaseInitializer({
 
       const { vapIdKey = "" } = notificationSettings || {};
 
-      console.log("🔍 Firebase Config:", firebaseConfig);
-      console.log("🔍 Notification Settings:", notificationSettings);
-      console.log("🔍 VAPID Key:", vapIdKey);
-
-      if (!firebaseConfig) {
-        console.warn("Firebase configuration not found in settings. Firebase features will be disabled.");
-        return;
-      }
+      if (!firebaseConfig) return;
 
       if (firebaseConfig && !firebase) {
         const firebaseInstance = initializeFirebase(firebaseConfig);

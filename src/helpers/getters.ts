@@ -13,11 +13,6 @@ import {
 } from "@/types/ApiResponse";
 import { parse } from "cookie";
 import { GetServerSidePropsContext } from "next";
-import {
-  FALLBACK_FIREBASE_CONFIG,
-  FALLBACK_RECAPTCHA_CONFIG,
-  FALLBACK_NOTIFICATION_CONFIG,
-} from "@/config/firebaseConfig";
 
 export const getFlagEmoji = (countryCode: string): string => {
   const normalizedCode = countryCode.toLowerCase(); // Convert to lowercase as URLs are case-sensitive
@@ -79,37 +74,36 @@ export const getSlugFromContext = (context: GetServerSidePropsContext) => {
 };
 
 export function getFirebaseConfig(settings: Settings | null | undefined) {
-  // Fallback if no settings provided
-  if (!settings) {
-    console.warn("❌ Settings not available, using fallback Firebase config");
-    return FALLBACK_FIREBASE_CONFIG;
-  }
-
-  console.log("✅ Settings array found, length:", settings.length);
+  if (!settings) return null;
 
   const authSettings = settings.find(
     (item) => item.variable === "authentication"
   )?.value as AuthenticationSettings;
 
-  console.log("✅ Auth Settings found:", authSettings);
-  console.log("✅ Firebase enabled?", authSettings?.firebase);
+  if (!authSettings || !authSettings.firebase) return null;
 
-  // If auth settings don't exist or Firebase is disabled, use fallback
-  if (!authSettings || !authSettings.firebase) {
-    console.warn("❌ Firebase config not found in settings, using fallback config");
-    return FALLBACK_FIREBASE_CONFIG;
-  }
+  const {
+    fireBaseApiKey,
+    fireBaseAuthDomain,
+    fireBaseDatabaseURL,
+    fireBaseProjectId,
+    fireBaseStorageBucket,
+    fireBaseMessagingSenderId,
+    fireBaseAppId,
+    fireBaseMeasurementId,
+  } = authSettings;
 
-  // Return database config if available, otherwise use fallback
+  if (!fireBaseApiKey || !fireBaseProjectId || !fireBaseAppId) return null;
+
   return {
-    apiKey: authSettings.fireBaseApiKey || FALLBACK_FIREBASE_CONFIG.apiKey,
-    authDomain: authSettings.fireBaseAuthDomain || FALLBACK_FIREBASE_CONFIG.authDomain,
-    databaseURL: authSettings.fireBaseDatabaseURL || FALLBACK_FIREBASE_CONFIG.databaseURL,
-    projectId: authSettings.fireBaseProjectId || FALLBACK_FIREBASE_CONFIG.projectId,
-    storageBucket: authSettings.fireBaseStorageBucket || FALLBACK_FIREBASE_CONFIG.storageBucket,
-    messagingSenderId: authSettings.fireBaseMessagingSenderId || FALLBACK_FIREBASE_CONFIG.messagingSenderId,
-    appId: authSettings.fireBaseAppId || FALLBACK_FIREBASE_CONFIG.appId,
-    measurementId: authSettings.fireBaseMeasurementId || FALLBACK_FIREBASE_CONFIG.measurementId,
+    apiKey: fireBaseApiKey,
+    authDomain: fireBaseAuthDomain,
+    databaseURL: fireBaseDatabaseURL,
+    projectId: fireBaseProjectId,
+    storageBucket: fireBaseStorageBucket,
+    messagingSenderId: fireBaseMessagingSenderId,
+    appId: fireBaseAppId,
+    measurementId: fireBaseMeasurementId,
   };
 }
 
@@ -175,38 +169,24 @@ export function getSpecificSettings(
 
 export function getRecaptchaSiteKey(
   settings: Settings | undefined | null
-): string {
-  // Get auth settings
+): string | null {
   const authSettings = getSpecificSettings(
     settings,
     "authentication"
   ) as AuthenticationSettings | undefined;
 
-  // Return from settings if available, otherwise use fallback
-  if (authSettings?.googleRecaptchaSiteKey) {
-    return authSettings.googleRecaptchaSiteKey;
-  }
-
-  console.warn("reCAPTCHA site key not found in settings, using fallback");
-  return FALLBACK_RECAPTCHA_CONFIG.siteKey;
+  return authSettings?.googleRecaptchaSiteKey || null;
 }
 
 export function getVapidKey(
   settings: Settings | undefined | null
-): string {
-  // Get notification settings
+): string | null {
   const notificationSettings = getSpecificSettings(
     settings,
     "notification"
   ) as NotificationSettings | undefined;
 
-  // Return from settings if available, otherwise use fallback
-  if (notificationSettings?.vapIdKey) {
-    return notificationSettings.vapIdKey;
-  }
-
-  console.warn("VAPID key not found in settings, using fallback");
-  return FALLBACK_NOTIFICATION_CONFIG.vapIdKey;
+  return notificationSettings?.vapIdKey || null;
 }
 
 export const getCookieFromContext = <T>(

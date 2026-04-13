@@ -141,33 +141,27 @@ export function clearRecaptchaVerifier(
 ): void {
   try {
     if (firebaseInstance.recaptchaVerifier) {
-      // Clear the reCAPTCHA widget
       firebaseInstance.recaptchaVerifier.clear();
       firebaseInstance.recaptchaVerifier = null;
     }
 
-    // Only remove unique/temporary containers, keep the main one
+    // Hide unique containers immediately but delay removal so reCAPTCHA's
+    // internal setTimeout callbacks can finish without hitting null.style
     const uniqueContainers = document.querySelectorAll('[id^="recaptcha-container-"]');
     uniqueContainers.forEach((container) => {
-      container.remove();
+      (container as HTMLElement).style.display = "none";
+      setTimeout(() => container.remove(), 2000);
     });
 
-    // Clear main container content but don't remove it
-    const mainContainer = document.getElementById("recaptcha-container");
-    if (mainContainer) {
-      mainContainer.innerHTML = "";
-    } else {
-      // Only create if it doesn't exist
+    // Ensure main container exists
+    if (!document.getElementById("recaptcha-container")) {
       const newContainer = document.createElement("div");
       newContainer.id = "recaptcha-container";
       newContainer.style.display = "none";
       document.body.appendChild(newContainer);
     }
-
-    console.log("reCAPTCHA verifier cleared");
   } catch (error) {
     console.warn("Error clearing reCAPTCHA verifier:", error);
-    // Ensure main container exists as fallback
     if (!document.getElementById("recaptcha-container")) {
       const newContainer = document.createElement("div");
       newContainer.id = "recaptcha-container";
