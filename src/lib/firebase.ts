@@ -146,31 +146,34 @@ export function clearRecaptchaVerifier(
       firebaseInstance.recaptchaVerifier = null;
     }
 
-    // Remove all recaptcha containers (both fixed and unique ones)
-    const containers = document.querySelectorAll('[id^="recaptcha-container"]');
-    containers.forEach((container) => {
+    // Only remove unique/temporary containers, keep the main one
+    const uniqueContainers = document.querySelectorAll('[id^="recaptcha-container-"]');
+    uniqueContainers.forEach((container) => {
       container.remove();
     });
 
-    // Create a fresh main container element
-    const newContainer = document.createElement("div");
-    newContainer.id = "recaptcha-container";
-    newContainer.style.display = "none";
-    document.body.appendChild(newContainer);
+    // Clear main container content but don't remove it
+    const mainContainer = document.getElementById("recaptcha-container");
+    if (mainContainer) {
+      mainContainer.innerHTML = "";
+    } else {
+      // Only create if it doesn't exist
+      const newContainer = document.createElement("div");
+      newContainer.id = "recaptcha-container";
+      newContainer.style.display = "none";
+      document.body.appendChild(newContainer);
+    }
 
-    console.log("reCAPTCHA verifier cleared and container recreated");
+    console.log("reCAPTCHA verifier cleared");
   } catch (error) {
     console.warn("Error clearing reCAPTCHA verifier:", error);
-    // Force recreate the container even if clearing the verifier fails
-    const containers = document.querySelectorAll('[id^="recaptcha-container"]');
-    containers.forEach((container) => {
-      container.remove();
-    });
-
-    const newContainer = document.createElement("div");
-    newContainer.id = "recaptcha-container";
-    newContainer.style.display = "none";
-    document.body.appendChild(newContainer);
+    // Ensure main container exists as fallback
+    if (!document.getElementById("recaptcha-container")) {
+      const newContainer = document.createElement("div");
+      newContainer.id = "recaptcha-container";
+      newContainer.style.display = "none";
+      document.body.appendChild(newContainer);
+    }
   }
 }
 
