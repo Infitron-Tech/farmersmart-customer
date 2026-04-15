@@ -393,7 +393,7 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
       if (window.otpMethod === 'bulksms') {
         // BulkSMS Nigeria login
         response = await phoneBulkSmsLogin({
-          phone: window.bulkSmsPhone || phoneNumber,
+          phone: window.bulkSmsPhone || otpPhoneNumber,
           otp,
           fcm_token,
           device_type: "web",
