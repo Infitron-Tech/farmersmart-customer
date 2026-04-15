@@ -237,6 +237,46 @@ export const phoneLogin = async (params: {
   }
 };
 
+export const sendPhoneOtp = async (params: {
+  phone: string;
+}): Promise<ApiResponse<{ phone: string }>> => {
+  try {
+    const response = await api.post("/auth/send-phone-otp", null, { params });
+    return response.data;
+  } catch (error) {
+    console.error("API error:", error);
+    return { success: false, message: "Failed to send OTP.", data: undefined };
+  }
+};
+
+export const verifyPhoneOtp = async (params: {
+  phone: string;
+  otp: string;
+}): Promise<ApiResponse<null>> => {
+  try {
+    const response = await api.post("/auth/verify-phone-otp", null, { params });
+    return response.data;
+  } catch (error) {
+    console.error("API error:", error);
+    return { success: false, message: "Failed to verify OTP.", data: undefined };
+  }
+};
+
+export const phoneBulkSmsLogin = async (params: {
+  phone: string;
+  otp: string;
+  fcm_token?: string;
+  device_type?: "web";
+}): Promise<ApiResponse<userData>> => {
+  try {
+    const response = await api.post("/auth/phone/bulksms-login", null, { params });
+    return response.data;
+  } catch (error) {
+    console.error("API error:", error);
+    return { success: false, message: "An error occurred.", data: undefined };
+  }
+};
+
 export const logout = async (
   access_token: string | null,
 ): Promise<ApiResponse<{}>> => {

@@ -22,6 +22,7 @@ import {
   handleResendOtp,
   handleRegisterUser,
 } from "@/helpers/auth";
+import { verifyPhoneOtp } from "@/routes/api";
 import GoogleLoginBtn from "../Functional/GoogleLoginBtn";
 import AppleLoginBtn from "../Functional/AppleLoginBtn";
 import { clearRecaptchaVerifier, FirebaseInstance } from "@/lib/firebase";
@@ -377,8 +378,23 @@ export const RegisterModal: FC = () => {
     }
 
     try {
-      // Verify OTP
-      await confirmationResult.confirm(otp);
+      // Verify OTP based on method (Firebase or BulkSMS)
+      if (window.otpMethod === 'bulksms') {
+        // BulkSMS Nigeria verification
+        const bulkSmsResult = await verifyPhoneOtp({
+          phone: window.bulkSmsPhone || numberDetails.phoneNumber,
+          otp,
+        });
+        if (!bulkSmsResult.success) {
+          throw new Error('Invalid OTP');
+        }
+      } else {
+        // Firebase verification
+        if (!confirmationResult) {
+          throw new Error('Confirmation result not found');
+        }
+        await confirmationResult.confirm(otp);
+      }
 
       const res = await handleRegisterUser(
         {

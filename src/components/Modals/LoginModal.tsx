@@ -38,7 +38,7 @@ import {
   handleSignUp,
   handleResendOtp,
 } from "@/helpers/auth";
-import { phoneLogin } from "@/routes/api";
+import { verifyPhoneOtp, phoneLogin, phoneBulkSmsLogin } from "@/routes/api";
 import { setCookie } from "@/lib/cookies";
 import { login as ReduxLogin } from "@/lib/redux/slices/authSlice";
 import {
@@ -385,24 +385,38 @@ export const LoginModal: FC<LoginModalProps> = ({ triggerView = "btn" }) => {
     }
 
     try {
-      // Verify OTP with Firebase
-      const userCredential = await confirmationResult.confirm(otp);
-
-      // Get the Firebase ID token
-      const idToken = await userCredential.user.getIdToken();
       const fcm_token = localStorage.getItem("fcm-token") || undefined;
 
-      console.log(
-        "Firebase ID Token obtained:",
-        idToken.substring(0, 50) + "...",
-      );
+      let response;
 
-      // Call phone login API with Firebase token
-      const response = await phoneLogin({
-        idToken,
-        fcm_token,
-        device_type: "web",
-      });
+      // Verify OTP based on method (Firebase or BulkSMS)
+      if (window.otpMethod === 'bulksms') {
+        // BulkSMS Nigeria login
+        response = await phoneBulkSmsLogin({
+          phone: window.bulkSmsPhone || phoneNumber,
+          otp,
+          fcm_token,
+          device_type: "web",
+        });
+      } else {
+        // Firebase phone login
+        const userCredential = await confirmationResult.confirm(otp);
+
+        // Get the Firebase ID token
+        const idToken = await userCredential.user.getIdToken();
+
+        console.log(
+          "Firebase ID Token obtained:",
+          idToken.substring(0, 50) + "...",
+        );
+
+        // Call phone login API with Firebase token
+        response = await phoneLogin({
+          idToken,
+          fcm_token,
+          device_type: "web",
+        });
+      }
 
       if (response.success && response.data) {
         // Set cookies

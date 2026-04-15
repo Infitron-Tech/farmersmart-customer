@@ -12,6 +12,8 @@ import {
   registerUser,
   verifyUser,
   logout as logoutApi,
+  sendPhoneOtp,
+  verifyPhoneOtp,
 } from "@/routes/api";
 import { ApiResponse, userData } from "@/types/ApiResponse";
 import { addToast } from "@heroui/react";
@@ -51,6 +53,8 @@ declare global {
     prefillRegisterEmail?: string;
     prefillUserName?: string;
     prefillRegisterFromGoogle?: boolean;
+    otpMethod?: 'firebase' | 'bulksms';
+    bulkSmsPhone?: string;
   }
 }
 
@@ -332,6 +336,7 @@ export const handleSignUp = async (
 
     // Store confirmation result for later verification
     window.confirmationResult = confirmationResult;
+    window.otpMethod = 'firebase';
 
     addToast({
       title: i18n.t("signup_toast.otp_sent_title"),
@@ -340,7 +345,43 @@ export const handleSignUp = async (
     });
     return true;
   } catch (error) {
-    const errorMsg = getFirebaseErrorMessage(error as FirebaseError);
+    const firebaseError = error as FirebaseError;
+    const errorMessage = firebaseError.message || '';
+
+    // Firebase errors that trigger BulkSMS Nigeria fallback
+    const FIREBASE_FALLBACK_ERRORS = [
+      'auth/internal-error',
+      'auth/too-many-requests',
+      'auth/quota-exceeded',
+    ];
+
+    // Check if error code matches or if message contains "Error code: 39" (backend error)
+    const shouldFallback = FIREBASE_FALLBACK_ERRORS.includes(firebaseError.code) ||
+                          errorMessage.includes('Error code: 39') ||
+                          errorMessage.includes('503') ||
+                          firebaseError.code?.includes('internal-error');
+
+    if (shouldFallback) {
+      console.log(`Firebase failed (${firebaseError.code || 'unknown'}), trying BulkSMS Nigeria fallback...`);
+
+      try {
+        const result = await sendPhoneOtp({ phone: phoneNumber });
+        if (result.success) {
+          window.otpMethod = 'bulksms';
+          window.bulkSmsPhone = phoneNumber;
+          addToast({
+            title: "OTP Sent",
+            description: "We couldn't reach your carrier via Firebase, but your OTP has been sent via SMS.",
+            color: "success",
+          });
+          return true;
+        }
+      } catch (bulkSmsError) {
+        console.error("BulkSMS fallback error:", bulkSmsError);
+      }
+    }
+
+    const errorMsg = getFirebaseErrorMessage(firebaseError);
     console.error("Sign-up error:", errorMsg);
     addToast({
       title: i18n.t("signup_toast.signup_error_title"),
@@ -395,6 +436,7 @@ export const handleResendOtp = async (
 
     // Store new confirmation result
     window.confirmationResult = confirmationResult;
+    window.otpMethod = 'firebase';
 
     addToast({
       title: i18n.t("resend_otp_toast.otp_resent_title"),
@@ -404,7 +446,43 @@ export const handleResendOtp = async (
 
     return true;
   } catch (error) {
-    const errorMsg = getFirebaseErrorMessage(error as FirebaseError);
+    const firebaseError = error as FirebaseError;
+    const errorMessage = firebaseError.message || '';
+
+    // Firebase errors that trigger BulkSMS Nigeria fallback
+    const FIREBASE_FALLBACK_ERRORS = [
+      'auth/internal-error',
+      'auth/too-many-requests',
+      'auth/quota-exceeded',
+    ];
+
+    // Check if error code matches or if message contains "Error code: 39" (backend error)
+    const shouldFallback = FIREBASE_FALLBACK_ERRORS.includes(firebaseError.code) ||
+                          errorMessage.includes('Error code: 39') ||
+                          errorMessage.includes('503') ||
+                          firebaseError.code?.includes('internal-error');
+
+    if (shouldFallback) {
+      console.log(`Firebase failed (${firebaseError.code || 'unknown'}), trying BulkSMS Nigeria fallback...`);
+
+      try {
+        const result = await sendPhoneOtp({ phone: phoneNumber });
+        if (result.success) {
+          window.otpMethod = 'bulksms';
+          window.bulkSmsPhone = phoneNumber;
+          addToast({
+            title: "OTP Resent",
+            description: "We couldn't reach your carrier via Firebase, but your OTP has been sent via SMS.",
+            color: "success",
+          });
+          return true;
+        }
+      } catch (bulkSmsError) {
+        console.error("BulkSMS fallback error:", bulkSmsError);
+      }
+    }
+
+    const errorMsg = getFirebaseErrorMessage(firebaseError);
     console.error("Resend OTP error:", errorMsg);
     addToast({
       title: i18n.t("resend_otp_toast.resend_otp_error_title"),
