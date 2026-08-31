@@ -136,8 +136,8 @@ export const TILE_LAYERS = [
   "https://tiles.stadiamaps.com/tiles/terrain/{z}/{x}/{y}.png",
 ];
 
-export const staticLat = 23.242;
-export const staticLng = 69.6669;
+export const staticLat = 6.605874;
+export const staticLng = 6.605874;
 
 export const demoEmail = "user@gmail.com";
 export const demoPassword = "12345678";

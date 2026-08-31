@@ -4,7 +4,7 @@ const path = require("path");
 const chalk = require("chalk");
 
 const LOCALES_DIR = "public/locales";
-const LANGS = ["en", "hi", "ar"];
+const LANGS = ["en"];
 
 // Collect all discovered keys here (independent from scanner internals)
 const COLLECTED_KEYS = new Set();

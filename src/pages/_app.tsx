@@ -29,16 +29,10 @@ type AppPropsWithLayout = AppProps & {
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
 
-  // // Set initial RTL direction based on language
+  // Set initial document language/direction
   useEffect(() => {
-    const currentLang = i18n.language;
-    if (currentLang === "ar") {
-      document.documentElement.setAttribute("dir", "rtl");
-      document.documentElement.setAttribute("lang", "ar");
-    } else {
-      document.documentElement.setAttribute("dir", "ltr");
-      document.documentElement.setAttribute("lang", currentLang);
-    }
+    document.documentElement.setAttribute("dir", "ltr");
+    document.documentElement.setAttribute("lang", i18n.language);
   }, []);
 
   // Track page views on route changes

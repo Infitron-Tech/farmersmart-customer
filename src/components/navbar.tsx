@@ -30,7 +30,6 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSettings } from "@/contexts/SettingsContext";
 import CategoryTabs from "./Functional/CategoryTabs";
-import LanguageSwitcher from "./Functional/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 const FallbackCartIcon = () => (
   <Link href="/cart">
@@ -228,9 +227,6 @@ export const Navbar: FC = () => {
           {/* Right Side Actions - Desktop */}
           <NavbarContent className="hidden md:flex md:basis-1/4" justify="end">
             <NavbarItem className="flex items-end gap-2">
-              <LanguageSwitcher />
-            </NavbarItem>
-            <NavbarItem className="flex items-end gap-2">
               <ThemeSwitch />
             </NavbarItem>
             <NavbarCartContent />
@@ -240,7 +236,6 @@ export const Navbar: FC = () => {
           {/* Mobile Menu */}
           <NavbarMenu>
             <NavbarMenuItem className="flex justify-between items-center gap-4 pb-4 border-b border-divider">
-              <LanguageSwitcher />
               <ThemeSwitch variant="switch" />
             </NavbarMenuItem>
             <div className="flex flex-col gap-1 mt-2">
